@@ -3,8 +3,9 @@ import {
   TypeOrmModuleAsyncOptions,
   TypeOrmModuleOptions,
 } from '@nestjs/typeorm';
+import { RefreshToken } from 'src/modules/auth/entity/refresh-token.entity';
 
-import { User } from 'src/users/user.entity';
+import { User } from 'src/modules/users/user.entity';
 import { DataSource, DataSourceOptions } from 'typeorm';
 
 //LOAD Environment Variables
@@ -21,11 +22,13 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
       host: configService.get<string>('dbHost'),
       port: configService.get<number>('dbPort'),
       username: configService.get<string>('username'),
-      database: configService.get<string>('dbName'),
+      // database: configService.get<string>('dbName'),
+      database: 'ExpTravel',
       password: configService.get<string>('password'),
-      entities: [User],
+      entities: [User,RefreshToken],
       synchronize: false,
       migrations: ['dist/db/migrations/*.js'],
+      logging: true,
     };
   },
 };
@@ -38,7 +41,8 @@ export const dataSourceOptions: DataSourceOptions = {
   host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT),
   username: process.env.USERNAME,
-  database: process.env.DB_NAME,
+  // database: process.env.DB_NAME,
+  database: 'ExpTravel',
   password: process.env.PASSWORD,
   entities: ['dist/**/*.entity.js'], //1
   synchronize: false, // 2

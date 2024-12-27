@@ -1,5 +1,4 @@
 export interface PayloadType {
-  email: string;
+  userEmail: string;
   userId: string;
-  artistId?: number;
 }

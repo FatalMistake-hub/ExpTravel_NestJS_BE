@@ -30,4 +30,10 @@ export class UsersService {
   async findOne(email: string): Promise<User> {
     return this.userRepository.findOne({ where: { userEmail: email } });
   }
+  async findOneById(id: string): Promise<User> {
+    return this.userRepository.findOne({ where: { userId: id } });
+  }
+  async findOneByEmail(email: string): Promise<User> {
+    return this.userRepository.findOne({ where: { userEmail: email } });
+  }
 }

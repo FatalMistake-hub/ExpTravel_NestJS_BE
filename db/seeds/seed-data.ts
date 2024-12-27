@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 import * as bcrypt from 'bcryptjs';
-import { User } from 'src/users/user.entity';
+import { User } from 'src/modules/users/user.entity';
 import { EntityManager } from 'typeorm';
 
 export const seedData = async (manager: EntityManager): Promise<void> => {
