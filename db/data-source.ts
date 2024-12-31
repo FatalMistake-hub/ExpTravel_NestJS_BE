@@ -4,6 +4,9 @@ import {
   TypeOrmModuleOptions,
 } from '@nestjs/typeorm';
 import { RefreshToken } from 'src/modules/auth/entity/refresh-token.entity';
+import { Category } from 'src/modules/category/category.entity';
+import { ImageDetail } from 'src/modules/imageDetail/imageDetail.entity';
+import { Tour } from 'src/modules/tour/tour.entity';
 
 import { User } from 'src/modules/users/user.entity';
 import { DataSource, DataSourceOptions } from 'typeorm';
@@ -25,7 +28,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
       // database: configService.get<string>('dbName'),
       database: 'ExpTravel',
       password: configService.get<string>('password'),
-      entities: [User,RefreshToken],
+      entities: [User, RefreshToken,Tour,Category,ImageDetail],
       synchronize: false,
       migrations: ['dist/db/migrations/*.js'],
       logging: true,

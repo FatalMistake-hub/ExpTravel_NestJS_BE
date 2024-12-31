@@ -1,9 +1,11 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Min, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class JwtResquest {
   @IsEmail()
-  @IsNotEmpty()
+  @IsNotEmpty({
+    message: 'Email is required',
+  })
   @ApiProperty({
     description: 'The email of the user',
     example: 'haha@gmail.com',
@@ -15,7 +17,8 @@ export class JwtResquest {
     example: 'haha',
   })
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Password is required' })
+  @MinLength(8, { message: 'Password must be at least 8 characters' })
   password: string;
 }
 

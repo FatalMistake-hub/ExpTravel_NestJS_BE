@@ -12,6 +12,9 @@ import { SeedModule } from './seed/seed.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { APP_FILTER } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/filters/AllExceptionsFilter';
+import { CategoriesModule } from './modules/category/category.module';
+import { ToursModule } from './modules/tour/tour.module';
+import { ImageDetailsModule } from './modules/imageDetail/ImageDetail.module';
 
 @Module({
   imports: [
@@ -25,6 +28,9 @@ import { AllExceptionsFilter } from './common/filters/AllExceptionsFilter';
     TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     AuthModule,
     UsersModule,
+    CategoriesModule,
+    ToursModule,
+    ImageDetailsModule,
     SeedModule,
   ],
   providers: [

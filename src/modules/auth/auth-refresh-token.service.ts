@@ -52,18 +52,21 @@ export class AuthRefreshTokenService {
     return newRefreshToken;
   }
 
-  async verifyRefreshToken(refreshToken: string) {
-    const token = await this.authRefreshTokenRepository.findOne({
-      where: {
-        token: refreshToken,
-      },
-    });
-    console.log("token psdlfpldfpldpfldplfdlpfdlpfl",
-    );
+  async verifyRefreshToken(refreshToken?: string) {
+    const token = refreshToken
+      ? await this.authRefreshTokenRepository.findOne({
+          where: {
+            token: refreshToken,
+          },
+        })
+      : null;
     if (!token && refreshToken) {
       throw new UnauthorizedException('Invalid refresh token');
     }
-    if (token.expireDate < new Date()) {
+    if (!token && !refreshToken) {
+      return false;
+    }
+    if (token?.expireDate < new Date()) {
       throw new UnauthorizedException('Refresh token expired');
     }
     if (
@@ -94,12 +97,12 @@ export class AuthRefreshTokenService {
   }
 
   async deleteRefreshToken(user: User, refreshToken: string) {
-      await this.authRefreshTokenRepository.delete({
-        userId: user.userId,
-      });
-      return {
-        message: 'Logout successful',
-      };
+    await this.authRefreshTokenRepository.delete({
+      userId: user.userId,
+    });
+    return {
+      message: 'Logout successful',
+    };
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_6AM)
