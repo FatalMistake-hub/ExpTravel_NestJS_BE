@@ -24,7 +24,7 @@ import { BaseEntity } from 'src/base.entity';
 
 @Entity('tours')
 export class Tour extends BaseEntity {
-  @PrimaryGeneratedColumn('increment', { type: 'decimal' })
+  @PrimaryGeneratedColumn('identity', { type: 'bigint' })
   tourId: number;
 
   @Column({ name: 'title', nullable: true })

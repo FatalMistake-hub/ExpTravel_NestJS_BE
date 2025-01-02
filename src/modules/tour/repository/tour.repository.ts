@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
-
+import { DataSource, Repository } from 'typeorm';
+import { Tour } from '../tour.entity';
+  
 @Injectable()
-export class NativeTourService {
-  constructor(@InjectDataSource() private readonly dataSource: DataSource) {}
+export class NativeTourRepository extends Repository<Tour> {
+  constructor(private readonly dataSource: DataSource) {
+    super(Tour, dataSource.createEntityManager());
+  }
 
   async findTourByCategoryName(
     categoryName: string,

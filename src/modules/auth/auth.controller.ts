@@ -21,7 +21,7 @@ import { Response, Request as ExpressRequest } from 'express';
 import { JwtRefreshAuthGuard } from './guard/jwt-refresh-auth.guard';
 import { JwtAuthGuard } from './guard/jwt-auth.guard';
 @Controller('auth')
-@ApiTags('auth')
+@ApiTags('Auth')
 export class AuthController {
   constructor(
     private authService: AuthService,

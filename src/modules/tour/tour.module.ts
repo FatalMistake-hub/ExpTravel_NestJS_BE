@@ -2,7 +2,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ImageDetailsModule } from '../imageDetail/ImageDetail.module';
 import { ImageDetailsService } from '../imageDetail/ImageDetail.service';
-import { NativeTourService } from './repository/tour.repository';
+import {
+  NativeTourRepository,
+} from './repository/tour.repository';
 import { TourController } from './tour.controller';
 import { Tour } from './tour.entity';
 import { ToursService } from './tour.service';
@@ -24,7 +26,7 @@ import { JwtModule } from '@nestjs/jwt';
       inject: [ConfigService],
     }),
   ],
-  providers: [ToursService, NativeTourService, ImageDetailsService],
+  providers: [ToursService, ImageDetailsService, NativeTourRepository],
   exports: [ToursService, TypeOrmModule.forFeature([Tour])],
   controllers: [TourController],
 })

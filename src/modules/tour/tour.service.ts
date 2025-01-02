@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Tour } from './tour.entity';
-import { NativeTourService } from './repository/tour.repository';
+import { NativeTourRepository } from './repository/tour.repository';
 import { ImageDetailsService } from '../imageDetail/ImageDetail.service';
 import { TourCreateDto } from './dto/create-tour.dto';
 import { ImageDto } from '../imageDetail/dto/image.dto';
@@ -13,21 +13,20 @@ import { TourResponseDto } from './dto/response-tour.dto';
 @Injectable()
 export class ToursService {
   constructor(
-    @InjectRepository(Tour)
-    private tourRepository: Repository<Tour>, // 1.
-    private readonly nativeTourRepository: NativeTourService,
-    private readonly imageDetailService: ImageDetailsService,
-    // private readonly userService: UsersService, 
-  ) // private readonly dayBookService: DayBookService,
+    @InjectRepository(NativeTourRepository)
+    // private tourRepository: Repository<Tour>, // 1.
+    private readonly nativeTourRepository: NativeTourRepository,
+    private readonly imageDetailService: ImageDetailsService, // private readonly dayBookService: DayBookService,
+  ) // private readonly userService: UsersService,
   // private readonly timeBookDetailService: TimeBookDetailService,
   {}
   async createTour(
     tourDto: TourCreateDto,
     userId: string,
   ): Promise<TourCreateDto> {
-    const tourList = await this.tourRepository.find({ where: { userId } });
+    const tourList = await this.nativeTourRepository.getAllTourByUserId(userId);
 
-    if (tourList.length === 0) {
+    if (tourList.length === 0) { 
       // Assuming there's a UserService with an updateRole method
       // await this.userService.updateRole(userId, 'OWNER');
     }
@@ -40,7 +39,7 @@ export class ToursService {
     // const startTime = `${tourDto.timeBookStart.hour}:${tourDto.timeBookStart.minutes}`;
     // const endTime = `${tourDto.timeBookEnd.hour}:${tourDto.timeBookEnd.minutes}`;
     console.log(tourDto, tourId, userId);
-    const newTour = this.tourRepository.create({
+    const newTour = this.nativeTourRepository.create({
       tourId,
       userId,
       categories: tourDto.categories,
@@ -62,7 +61,7 @@ export class ToursService {
       // timeBookEnd: endTime,
     });
 
-    await this.tourRepository.save(newTour);
+    await this.nativeTourRepository.save(newTour);
 
     // IMAGE PROCESS
     const imageDtos: ImageDto[] = tourDto.imageDtoList.map((item) => ({
@@ -107,7 +106,7 @@ export class ToursService {
   }
   async getAll(pageNo: number, pageSize: number): Promise<TourResponseDto> {
     // Pagination
-    const [tourList, totalElements] = await this.tourRepository.findAndCount({
+    const [tourList, totalElements] = await this.nativeTourRepository.findAndCount({
       take: pageSize,
       skip: (pageNo - 1) * pageSize,
       order: { createdAt: 'DESC' }, // Assuming you have a `createdAt` field

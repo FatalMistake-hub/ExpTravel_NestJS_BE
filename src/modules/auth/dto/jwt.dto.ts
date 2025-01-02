@@ -8,13 +8,13 @@ export class JwtResquest {
   })
   @ApiProperty({
     description: 'The email of the user',
-    example: 'haha@gmail.com',
+    example: 'nhatqm1711@gmail.com',
   })
   email: string;
 
   @ApiProperty({
     description: 'The password of the user',
-    example: 'haha',
+    example: 'nhatquach',
   })
   @IsString()
   @IsNotEmpty({ message: 'Password is required' })
