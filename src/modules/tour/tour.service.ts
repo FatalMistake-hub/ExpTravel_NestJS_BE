@@ -14,19 +14,16 @@ import { TourResponseDto } from './dto/response-tour.dto';
 export class ToursService {
   constructor(
     @InjectRepository(NativeTourRepository)
-    // private tourRepository: Repository<Tour>, // 1.
     private readonly nativeTourRepository: NativeTourRepository,
-    private readonly imageDetailService: ImageDetailsService, // private readonly dayBookService: DayBookService,
-  ) // private readonly userService: UsersService,
-  // private readonly timeBookDetailService: TimeBookDetailService,
-  {}
+    private readonly imageDetailService: ImageDetailsService, // private readonly dayBookService: DayBookService, // private readonly userService: UsersService, // private tourRepository: Repository<Tour> // private readonly timeBookDetailService: TimeBookDetailService,
+  ) {}
   async createTour(
     tourDto: TourCreateDto,
     userId: string,
   ): Promise<TourCreateDto> {
     const tourList = await this.nativeTourRepository.getAllTourByUserId(userId);
 
-    if (tourList.length === 0) { 
+    if (tourList.length === 0) {
       // Assuming there's a UserService with an updateRole method
       // await this.userService.updateRole(userId, 'OWNER');
     }
@@ -106,42 +103,16 @@ export class ToursService {
   }
   async getAll(pageNo: number, pageSize: number): Promise<TourResponseDto> {
     // Pagination
-    const [tourList, totalElements] = await this.nativeTourRepository.findAndCount({
-      take: pageSize,
-      skip: (pageNo - 1) * pageSize,
-      order: { createdAt: 'DESC' }, // Assuming you have a `createdAt` field
-    });
-
+    const [tourList, totalElements] =
+      await this.nativeTourRepository.findAndCount({
+        take: pageSize,
+        skip: (pageNo - 1) * pageSize,
+        order: { createdAt: 'DESC' }, // Assuming you have a `createdAt` field
+        relations: ['categories'],
+      });
+    console.log(tourList, totalElements);
     // Prepare the response
-    const tourViewDtos: TourViewDto[] = [];
-    for (const tour of tourList) {
-      // const avgRating = await this.reviewService.calAvgRatingReviewForTour(tour.tourId); // Assuming this function exists
-
-      const tourViewDto = new TourViewDto();
-      tourViewDto.tourId = tour.tourId;
-      tourViewDto.title = tour.title;
-      tourViewDto.rating = tour.rating;
-      tourViewDto.city = tour.city;
-      tourViewDto.priceOnePerson = tour.priceOnePerson;
-      tourViewDto.working = tour.working;
-      tourViewDto.latitude = tour.latitude;
-      tourViewDto.longitude = tour.longitude;
-      tourViewDto.destination = tour.destination;
-      tourViewDto.destinationDescription = tour.destinationDescription;
-
-      // Assuming a simple categories relation where each tour has one category (adjust if necessary)
-      const category = tour.categories?.[0]; // Assuming `categories` is an array
-      tourViewDto.categoryId = category?.categoryId;
-      tourViewDto.categoryName = category?.categoryName;
-
-      // tourViewDto.avgRating = avgRating;
-      tourViewDto.userId = tour.userId;
-      tourViewDto.imageMain = tour.imageMain;
-      tourViewDto.timeSlotLength = tour.timeSlotLength;
-      tourViewDto.isDeleted = tour.isDeleted;
-
-      tourViewDtos.push(tourViewDto);
-    }
+    const tourViewDtos: TourViewDto[] = await this.mappingTourList(tourList);
 
     // Prepare the final response
     const totalPages = Math.ceil(totalElements / pageSize);
@@ -152,5 +123,64 @@ export class ToursService {
       totalElements: totalElements,
       totalPages: totalPages,
     };
+  }
+
+  async getTourByCategoryName(
+    categoryName: string,
+    pageNo: number,
+    pageSize: number,
+    northEastLat: string,
+    northEastLng: string,
+    southWestLat: string,
+    southWestLng: string,
+  ) {
+    const offset = (pageNo - 1) * pageSize;
+
+    const tours = await this.nativeTourRepository.findTourByCategoryName(
+      categoryName,
+      parseFloat(northEastLat),
+      parseFloat(southWestLat),
+      parseFloat(northEastLng),
+      parseFloat(southWestLng),
+      offset,
+      pageSize,
+    );
+    console.log(tours, typeof tours);
+    const tourDtos: TourViewDto[] = await this.mappingTourList(tours);
+
+    return {
+      content: tourDtos,
+      pageNo,
+      pageSize,
+      totalElements: tours.length,
+      totalPages: Math.ceil(tours.length / pageSize),
+    };
+  }
+  async mappingTourList(tourList?: Tour[]): Promise<TourViewDto[]> {
+    const tourViewDtos: TourViewDto[] = [];
+    if (!tourList) {
+      return tourViewDtos;
+    }
+    for (const tour of tourList) {
+      const tourViewDto = new TourViewDto();
+      tourViewDto.tourId = tour.tourId || tour.tour_id;
+      tourViewDto.title = tour.title;
+      tourViewDto.rating = tour.rating;
+      tourViewDto.city = tour.city;
+      tourViewDto.priceOnePerson = tour.priceOnePerson || tour.price_one_person;
+      tourViewDto.working = tour.working;
+      tourViewDto.latitude = tour.latitude;
+      tourViewDto.longitude = tour.longitude;
+      tourViewDto.destination = tour.destination;
+      tourViewDto.destinationDescription = tour.destinationDescription || tour.destination_description;
+      tourViewDto.userId = tour.userId || tour.user_id;
+      tourViewDto.imageMain = tour.imageMain || tour.image_main;
+      tourViewDto.timeSlotLength = tour.timeSlotLength || tour.time_slot_length;
+      tourViewDto.categoryId = tour.categories?.[0].categoryId || tour.category_id;
+      tourViewDto.categoryName = tour.categories?.[0].categoryName || tour.category_name;
+      tourViewDto.isDeleted = tour.isDeleted || tour.is_deleted;
+      tourViewDtos.push(tourViewDto);
+    }
+    return tourViewDtos;
   }
 }

@@ -28,7 +28,7 @@ export class NativeTourRepository extends Repository<Tour> {
         AND t.longitude BETWEEN $4 AND $5
       LIMIT $6 OFFSET $7
     `;
-    return this.dataSource.query(query, [
+    return await this.dataSource.query(query, [
       categoryName,
       northEastLat,
       southWestLat,
@@ -44,7 +44,7 @@ export class NativeTourRepository extends Repository<Tour> {
       SELECT * FROM tours
       WHERE tours.user_id = $1 AND tours.is_deleted = false
     `;
-    return this.dataSource.query(query, [userId]);
+    return await this.dataSource.query(query, [userId]);
   }
 
   async getPriceOnePersonByTourId(tourId: number) {
@@ -52,7 +52,7 @@ export class NativeTourRepository extends Repository<Tour> {
       SELECT price_one_person FROM tours
       WHERE tours.tour_id = $1 AND tours.is_deleted = false
     `;
-    return this.dataSource.query(query, [tourId]);
+    return await this.dataSource.query(query, [tourId]);
   }
 
   async getTourByUserId(userId: string, offset: number, limit: number) {
@@ -61,7 +61,7 @@ export class NativeTourRepository extends Repository<Tour> {
       WHERE tours.user_id = $1 AND tours.is_deleted = false
       LIMIT $2 OFFSET $3
     `;
-    return this.dataSource.query(query, [userId, limit, offset]);
+    return await this.dataSource.query(query, [userId, limit, offset]);
   }
 
   async getAllTour(offset: number, limit: number) {
@@ -69,14 +69,14 @@ export class NativeTourRepository extends Repository<Tour> {
       SELECT * FROM tours WHERE tours.is_deleted = false
       LIMIT $1 OFFSET $2
     `;
-    return this.dataSource.query(query, [limit, offset]);
+    return await this.dataSource.query(query, [limit, offset]);
   }
 
   async getAllTourForChatGpt() {
     const query = `
       SELECT * FROM tours WHERE tours.is_deleted = false
     `;
-    return this.dataSource.query(query);
+    return await this.dataSource.query(query);
   }
 
   async getTourByOrderId(orderId: string) {
@@ -87,7 +87,7 @@ export class NativeTourRepository extends Repository<Tour> {
       INNER JOIN orders AS o ON o.time_id = tbdt.time_id
       WHERE o.order_id = $1
     `;
-    return this.dataSource.query(query, [orderId]);
+    return await this.dataSource.query(query, [orderId]);
   }
 
   async updateStartTimeAndEndTime(
@@ -101,7 +101,7 @@ export class NativeTourRepository extends Repository<Tour> {
       SET time_book_start = $1, time_book_end = $2, time_slot_length = $3
       WHERE tour_id = $4
     `;
-    return this.dataSource.query(query, [
+    return await this.dataSource.query(query, [
       timeBookStart,
       timeBookEnd,
       timeSlotLength,
@@ -114,7 +114,7 @@ export class NativeTourRepository extends Repository<Tour> {
       SELECT * FROM tours
       WHERE tours.tour_id = $1 AND tours.is_deleted = false
     `;
-    return this.dataSource.query(query, [tourId]);
+    return await this.dataSource.query(query, [tourId]);
   }
 
   async getTourViewPort(
@@ -131,7 +131,7 @@ export class NativeTourRepository extends Repository<Tour> {
         AND tours.longitude BETWEEN $3 AND $4
       LIMIT $5 OFFSET $6
     `;
-    return this.dataSource.query(query, [
+    return await this.dataSource.query(query, [
       northEastLat,
       southWestLat,
       northEastLng,

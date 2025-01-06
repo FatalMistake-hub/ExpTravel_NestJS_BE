@@ -107,57 +107,58 @@ export class TourController {
   //   );
   // }
 
-  // @Get(':categoryName/:northEastLat/:northEastLng/:southWestLat/:southWestLng')
-  // @ApiOperation({ summary: 'Get tours by category name within viewport' })
-  // @ApiResponse({
-  //   status: 200,
-  //   description: 'Tours filtered by category and viewport',
-  // })
-  // @ApiParam({
-  //   name: 'categoryName',
-  //   type: String,
-  //   description: 'Category name',
-  // })
-  // @ApiParam({
-  //   name: 'northEastLat',
-  //   type: String,
-  //   description: 'Northeast latitude',
-  // })
-  // @ApiParam({
-  //   name: 'northEastLng',
-  //   type: String,
-  //   description: 'Northeast longitude',
-  // })
-  // @ApiParam({
-  //   name: 'southWestLat',
-  //   type: String,
-  //   description: 'Southwest latitude',
-  // })
-  // @ApiParam({
-  //   name: 'southWestLng',
-  //   type: String,
-  //   description: 'Southwest longitude',
-  // })
-  // async getTourByCategoryName(
-  //   @Param('categoryName') categoryName: string,
-  //   @Param('northEastLat') northEastLat: string,
-  //   @Param('northEastLng') northEastLng: string,
-  //   @Param('southWestLat') southWestLat: string,
-  //   @Param('southWestLng') southWestLng: string,
-  //   @Query('pageNo', new DefaultValuePipe(1), ParseIntPipe) pageNo: number = 1,
-  //   @Query('pageSize', new DefaultValuePipe(5), ParseIntPipe) pageSize: number = 5,
-  // ) {
-  //   pageSize = pageSize > 100 ? 100 : pageSize;
-  //   return this.tourService.getTourByCategoryName(
-  //     categoryName,
-  //     pageNo,
-  //     pageSize,
-  //     northEastLat,
-  //     northEastLng,
-  //     southWestLat,
-  //     southWestLng,
-  //   );
-  // }
+  @Get(':categoryName/:northEastLat/:northEastLng/:southWestLat/:southWestLng')
+  @ApiOperation({ summary: 'Get tours by category name within viewport' })
+  @ApiResponse({
+    status: 200,
+    description: 'Tours filtered by category and viewport',
+  })
+  @ApiParam({
+    name: 'categoryName',
+    type: String,
+    description: 'Category name',
+  })
+  @ApiParam({
+    name: 'northEastLat',
+    type: String,
+    description: 'Northeast latitude',
+  })
+  @ApiParam({
+    name: 'northEastLng',
+    type: String,
+    description: 'Northeast longitude',
+  })
+  @ApiParam({
+    name: 'southWestLat',
+    type: String,
+    description: 'Southwest latitude',
+  })
+  @ApiParam({
+    name: 'southWestLng',
+    type: String,
+    description: 'Southwest longitude',
+  })
+  async getTourByCategoryName(
+    @Param('categoryName') categoryName: string,
+    @Param('northEastLat') northEastLat: string,
+    @Param('northEastLng') northEastLng: string,
+    @Param('southWestLat') southWestLat: string,
+    @Param('southWestLng') southWestLng: string,
+    @Query('pageNo', new DefaultValuePipe(1), ParseIntPipe) pageNo: number = 1,
+    @Query('pageSize', new DefaultValuePipe(5), ParseIntPipe)
+    pageSize: number = 5,
+  ) {
+    pageSize = pageSize > 100 ? 100 : pageSize;
+    return this.tourService.getTourByCategoryName(
+      categoryName,
+      pageNo,
+      pageSize,
+      northEastLat,
+      northEastLng,
+      southWestLat,
+      southWestLng,
+    );
+  }
 
   // @Get('tour-detail/:tourId')
   // @ApiOperation({ summary: 'Get details of a tour by ID' })

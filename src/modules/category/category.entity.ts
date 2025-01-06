@@ -10,7 +10,7 @@ import { Tour } from '../tour/tour.entity';
 
 @Entity('categories')
 export class Category extends BaseEntity {
-  @PrimaryGeneratedColumn('increment')
+  @PrimaryGeneratedColumn('increment', { name: 'category_id' })
   categoryId: number; // You can use number instead of Long for auto-incrementing IDs in NestJS
 
   @Column({ name: 'category_name', nullable: false })
@@ -19,14 +19,13 @@ export class Category extends BaseEntity {
   @Column({ name: 'image_link', nullable: false })
   imageLink: string;
 
-  @ManyToMany(() => Tour, (tour) => tour.categories,
-    {
+  @ManyToMany(() => Tour, (tour) => tour.categories, {
     cascade: ['insert', 'update'],
     eager: false, // Lazy loading equivalent
-    }
-  )
+  })
   tours: Tour[];
 
+  [key: string]: any;
   constructor(categoryId?: number, categoryName?: string, imageLink?: string) {
     super(); // Assuming BaseEntity has the constructor logic if required
     this.categoryId = categoryId;

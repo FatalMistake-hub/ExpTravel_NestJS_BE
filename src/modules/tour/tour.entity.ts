@@ -24,7 +24,7 @@ import { BaseEntity } from 'src/base.entity';
 
 @Entity('tours')
 export class Tour extends BaseEntity {
-  @PrimaryGeneratedColumn('identity', { type: 'bigint' })
+  @PrimaryGeneratedColumn('identity', { type: 'bigint' ,name: 'tour_id'})
   tourId: number;
 
   @Column({ name: 'title', nullable: true })
@@ -98,10 +98,14 @@ export class Tour extends BaseEntity {
   })
   @JoinTable({
     name: 'tour_category',
+    joinColumn: { name: 'tour_id', referencedColumnName: 'tourId' },
+    inverseJoinColumn: { name: 'category_id', referencedColumnName: 'categoryId' },
   })
   categories: Category[];
 
   // Relationship: One-to-Many with ImageDetail
   @OneToMany(() => ImageDetail, (imageDetail) => imageDetail.tour, { cascade: true, eager: true })
   imageDetails: ImageDetail[];
+
+  [key: string]: any;
 }

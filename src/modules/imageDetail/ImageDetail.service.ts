@@ -16,6 +16,7 @@ export class ImageDetailsService {
     const imageDetailEntities = imageDtos.map((imageDto) => {
       const imageDetail = new ImageDetail();
       imageDetail.link = imageDto.link;
+      imageDetail.tourId = imageDto.tourId;
       return imageDetail;
     });
   
