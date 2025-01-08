@@ -74,38 +74,38 @@ export class TourController {
     return this.tourService.getAll(pageNo, pageSize);
   }
 
-  // @Get('search-view-port')
-  // @ApiOperation({ summary: 'Search tours by viewport' })
-  // @ApiResponse({ status: 200, description: 'Tours within the viewport' })
-  // @ApiQuery({
-  //   name: 'pageNo',
-  //   type: Number,
-  //   required: false,
-  //   description: 'Page number',
-  // })
-  // @ApiQuery({
-  //   name: 'pageSize',
-  //   type: Number,
-  //   required: false,
-  //   description: 'Page size',
-  // })
-  // @ApiBody({ type: ViewPortSearchDto })
-  // async searchViewPort(
-  //   @Query('pageNo', new DefaultValuePipe(1), ParseIntPipe) pageNo: number = 1,
-  //   @Query('pageSize', new DefaultValuePipe(5), ParseIntPipe)
-  //   pageSize: number = 5,
-  //   @Body() viewPortSearchDto: ViewPortSearchDto,
-  // ) {
-  //   pageSize = pageSize > 100 ? 100 : pageSize;
-  //   return this.tourService.getTourViewPort(
-  //     viewPortSearchDto.northEastLat,
-  //     viewPortSearchDto.southWestLat,
-  //     viewPortSearchDto.northEastLng,
-  //     viewPortSearchDto.southWestLng,
-  //     pageNo,
-  //     pageSize,
-  //   );
-  // }
+  @Get('search-view-port')
+  @ApiOperation({ summary: 'Search tours by viewport' })
+  @ApiResponse({ status: 200, description: 'Tours within the viewport' })
+  @ApiQuery({
+    name: 'pageNo',
+    type: Number,
+    required: false,
+    description: 'Page number',
+  })
+  @ApiQuery({
+    name: 'pageSize',
+    type: Number,
+    required: false,
+    description: 'Page size',
+  })
+  @ApiBody({ type: ViewPortSearchDto })
+  async searchViewPort(
+    @Query('pageNo', new DefaultValuePipe(1), ParseIntPipe) pageNo: number = 1,
+    @Query('pageSize', new DefaultValuePipe(5), ParseIntPipe)
+    pageSize: number = 5,
+    @Body() viewPortSearchDto: ViewPortSearchDto,
+  ) {
+    pageSize = pageSize > 100 ? 100 : pageSize;
+    return this.tourService.getTourViewPort(
+      viewPortSearchDto.northEastLat,
+      viewPortSearchDto.southWestLat,
+      viewPortSearchDto.northEastLng,
+      viewPortSearchDto.southWestLng,
+      pageNo,
+      pageSize,
+    );
+  }
 
   @Get(':categoryName/:northEastLat/:northEastLng/:southWestLat/:southWestLng')
   @ApiOperation({ summary: 'Get tours by category name within viewport' })
@@ -160,13 +160,13 @@ export class TourController {
     );
   }
 
-  // @Get('tour-detail/:tourId')
-  // @ApiOperation({ summary: 'Get details of a tour by ID' })
-  // @ApiResponse({ status: 200, description: 'Tour details' })
-  // @ApiParam({ name: 'tourId', type: Number, description: 'Tour ID' })
-  // async getTourDetailById(@Param('tourId') tourId: number) {
-  //   return this.tourService.getTourDetail(tourId);
-  // }
+  @Get('tour-detail/:tourId')
+  @ApiOperation({ summary: 'Get details of a tour by ID' })
+  @ApiResponse({ status: 200, description: 'Tour details' })
+  @ApiParam({ name: 'tourId', type: Number, description: 'Tour ID' })
+  async getTourDetailById(@Param('tourId') tourId: number) {
+    return this.tourService.getTourDetail(tourId);
+  }
 
   // @Delete('tour-delete/:id')
   // @ApiOperation({ summary: 'Delete a tour by ID' })

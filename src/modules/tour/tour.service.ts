@@ -1,22 +1,31 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Tour } from './tour.entity';
-import { NativeTourRepository } from './repository/tour.repository';
-import { ImageDetailsService } from '../imageDetail/ImageDetail.service';
-import { TourCreateDto } from './dto/create-tour.dto';
 import { ImageDto } from '../imageDetail/dto/image.dto';
-import { UsersService } from '../users/users.service';
-import { TourViewDto } from './dto/tour-view.dto';
+import { ImageDetail } from '../imageDetail/imageDetail.entity';
+import { ImageDetailsService } from '../imageDetail/ImageDetail.service';
+import { UserViewDto } from '../users/dto/user-view.dto';
+import { User } from '../users/user.entity';
+import { TourCreateDto } from './dto/create-tour.dto';
 import { TourResponseDto } from './dto/response-tour.dto';
+import { TourDetailDto } from './dto/tour-detail.dto';
+import { TourViewDto } from './dto/tour-view.dto';
+import { NativeTourRepository } from './repository/tour.repository';
+import { Tour } from './tour.entity';
+import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class ToursService {
   constructor(
     @InjectRepository(NativeTourRepository)
+    @InjectRepository(ImageDetail)
+    private readonly imageDetailRepository: Repository<ImageDetail>,
     private readonly nativeTourRepository: NativeTourRepository,
-    private readonly imageDetailService: ImageDetailsService, // private readonly dayBookService: DayBookService, // private readonly userService: UsersService, // private tourRepository: Repository<Tour> // private readonly timeBookDetailService: TimeBookDetailService,
-  ) {}
+    private readonly imageDetailService: ImageDetailsService,
+    // private readonly dayBookService: DayBookService,
+    private readonly userService: UsersService,
+  ) // // private tourRepository: Repository<Tour> // private readonly timeBookDetailService: TimeBookDetailService,
+  {}
   async createTour(
     tourDto: TourCreateDto,
     userId: string,
@@ -156,6 +165,107 @@ export class ToursService {
       totalPages: Math.ceil(tours.length / pageSize),
     };
   }
+
+  async getTourViewPort(
+    northEastLat: string,
+    northEastLng: string,
+    southWestLat: string,
+    southWestLng: string,
+    pageSize: number,
+    pageNo: number,
+  ) {
+    const offset = (pageNo - 1) * pageSize;
+
+    const tours = await this.nativeTourRepository.getTourViewPort(
+      parseFloat(northEastLat),
+      parseFloat(southWestLat),
+      parseFloat(northEastLng),
+      parseFloat(southWestLng),
+      offset,
+      pageSize,
+    );
+    const tourDtos: TourViewDto[] = await this.mappingTourList(tours);
+
+    return {
+      content: tourDtos,
+      pageNo,
+      pageSize,
+      totalElements: tours.length,
+      totalPages: Math.ceil(tours.length / pageSize),
+    };
+  }
+
+  async getTourDetail(tourId: number): Promise<TourDetailDto> {
+    const tour = await this.nativeTourRepository.findOne({
+      where: { tourId },
+    });
+
+    if (!tour) {
+      throw new NotFoundException('Tour not found !!');
+    }
+
+    const imageDetails = await this.imageDetailRepository.find({
+      where: { tourId: tour.tourId },
+    });
+    // const avgRatingTour = await this.reviewService.calAvgRatingReviewForTour(
+    //   tour.tourId,
+    // );
+    const user = await this.userService.getUserByTourId(tour.tourId);
+    console.log(imageDetails, user);
+
+    if (!user) {
+      throw new NotFoundException('User not found for the tour !!');
+    }
+
+    const userViewDto: UserViewDto = {
+      userId: user.userId,
+      role: user.role,
+      address: user.address,
+      language: user.language,
+      userName: user.userName,
+      userEmail: user.userEmail,
+      urlImage: user.urlImage,
+      description: user.description,
+      phoneNumber: user.phoneNumber,
+      isEnabled: user.isEnabled,
+    };
+
+    // const timeBookStart: TimeBook = tour.timeBookStart
+    //   ? { hour: tour.timeBookStart.hour, minutes: tour.timeBookStart.minute }
+    //   : null;
+
+    // const timeBookEnd: TimeBook = tour.timeBookEnd
+    //   ? { hour: tour.timeBookEnd.hour, minutes: tour.timeBookEnd.minute }
+    //   : null;
+
+    const tourDetailDto: TourDetailDto = {
+      tourId: tour.tourId,
+      title: tour.title,
+      rating: tour.rating,
+      city: tour.city,
+      priceOnePerson: tour.priceOnePerson,
+      imageMain: tour.imageMain,
+      working: tour.working,
+      latitude: tour.latitude,
+      longitude: tour.longitude,
+      destination: tour.destination,
+      destinationDescription: tour.destinationDescription,
+      images: imageDetails.map((image) => ({
+        imageId: image.imageId,
+        link: image.link,
+        tourId: image.tourId,
+      })),
+      // avgRating: avgRatingTour,
+      userId: tour.userId,
+      timeSlotLength: tour.timeSlotLength,
+      isDeleted: tour.isDeleted,
+      user: userViewDto,
+      // timeBookStart,
+      // timeBookEnd,
+    };
+
+    return tourDetailDto;
+  }
   async mappingTourList(tourList?: Tour[]): Promise<TourViewDto[]> {
     const tourViewDtos: TourViewDto[] = [];
     if (!tourList) {
@@ -172,12 +282,15 @@ export class ToursService {
       tourViewDto.latitude = tour.latitude;
       tourViewDto.longitude = tour.longitude;
       tourViewDto.destination = tour.destination;
-      tourViewDto.destinationDescription = tour.destinationDescription || tour.destination_description;
+      tourViewDto.destinationDescription =
+        tour.destinationDescription || tour.destination_description;
       tourViewDto.userId = tour.userId || tour.user_id;
       tourViewDto.imageMain = tour.imageMain || tour.image_main;
       tourViewDto.timeSlotLength = tour.timeSlotLength || tour.time_slot_length;
-      tourViewDto.categoryId = tour.categories?.[0].categoryId || tour.category_id;
-      tourViewDto.categoryName = tour.categories?.[0].categoryName || tour.category_name;
+      tourViewDto.categoryId =
+        tour.categories?.[0].categoryId || tour.category_id;
+      tourViewDto.categoryName =
+        tour.categories?.[0].categoryName || tour.category_name;
       tourViewDto.isDeleted = tour.isDeleted || tour.is_deleted;
       tourViewDtos.push(tourViewDto);
     }
