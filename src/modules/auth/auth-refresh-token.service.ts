@@ -38,15 +38,15 @@ export class AuthRefreshTokenService {
           token: currentRefreshToken,
         },
         {
-          isValid: false,
+          is_valid: false,
         },
       );
     }
 
     await this.authRefreshTokenRepository.insert({
       token: newRefreshToken,
-      expireDate: new Date(exp * 1000),
-      userId: authUserId,
+      expire_date: new Date(exp * 1000),
+      user_id: authUserId,
     });
 
     return newRefreshToken;
@@ -66,14 +66,14 @@ export class AuthRefreshTokenService {
     if (!token && !refreshToken) {
       return false;
     }
-    if (token?.expireDate < new Date()) {
+    if (token?.expire_date < new Date()) {
       throw new UnauthorizedException('Refresh token expired');
     }
     if (
       !this.jwtService.verify(token.token, {
         secret: this.configService.get('jwtRefreshSecret'),
       }) ||
-      !token.isValid
+      !token.is_valid
     ) {
       throw new UnauthorizedException('Invalid refresh token');
     }
@@ -84,12 +84,12 @@ export class AuthRefreshTokenService {
     currentRefreshToken?: string,
     currentRefreshTokenExpiresAt?: Date,
   ) {
-    const payload = { email: user.userEmail, sub: user.userId };
+    const payload = { email: user.user_email, sub: user.user_id };
 
     return {
       accessToken: this.jwtService.sign(payload), // jwt module is configured in auth.module.ts for access token
       refreshToken: await this.generateRefreshToken(
-        user.userId,
+        user.user_id,
         currentRefreshToken,
         currentRefreshTokenExpiresAt,
       ),
@@ -98,7 +98,7 @@ export class AuthRefreshTokenService {
 
   async deleteRefreshToken(user: User, refreshToken: string) {
     await this.authRefreshTokenRepository.delete({
-      userId: user.userId,
+      user_id: user.user_id,
     });
     return {
       message: 'Logout successful',
@@ -109,7 +109,7 @@ export class AuthRefreshTokenService {
   async clearExpiredRefreshTokens() {
     console.log('Clearing expired refresh tokens', new Date().toISOString());
     await this.authRefreshTokenRepository.delete({
-      expireDate: LessThanOrEqual(new Date()),
+      expire_date: LessThanOrEqual(new Date()),
     });
     console.log('Expired refresh tokens cleared');
   }

@@ -10,6 +10,7 @@ import { Tour } from 'src/modules/tour/tour.entity';
 
 import { User } from 'src/modules/users/user.entity';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 //LOAD Environment Variables
 require('dotenv').config();
@@ -35,9 +36,6 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
     };
   },
 };
-// console.log(process.env.NODE_ENV);
-// console.log(process.env.DB_HOST); // these variables are undefined
-// console.log(process.env.PASSWORD);
 
 export const dataSourceOptions: DataSourceOptions = {
   type: 'postgres',
@@ -50,6 +48,7 @@ export const dataSourceOptions: DataSourceOptions = {
   entities: ['dist/**/*.entity.js'], //1
   synchronize: false, // 2
   migrations: ['dist/db/migrations/*.js'], // 3
+  namingStrategy: new SnakeNamingStrategy(),
 };
 
 const dataSource = new DataSource(dataSourceOptions); //4

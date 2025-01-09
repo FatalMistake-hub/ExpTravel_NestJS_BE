@@ -12,10 +12,10 @@ import {
 @Entity('refresh_tokens')
 export class RefreshToken extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  refreshTokenId: string;
+  refresh_token_id: string;
 
   @Column({ name: 'user_id' })
-  userId: string;
+  user_id: string;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
@@ -25,8 +25,8 @@ export class RefreshToken extends BaseEntity {
   token: string;
 
   @Column({ nullable: false, type: 'timestamp' })
-  expireDate: Date;
+  expire_date: Date;
 
   @Column({ default: true })
-  isValid: boolean;
+  is_valid: boolean;
 }

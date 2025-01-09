@@ -15,6 +15,9 @@ import { AllExceptionsFilter } from './common/filters/AllExceptionsFilter';
 import { CategoriesModule } from './modules/category/category.module';
 import { ToursModule } from './modules/tour/tour.module';
 import { ImageDetailsModule } from './modules/imageDetail/ImageDetail.module';
+import { AutomapperModule } from '@automapper/nestjs';
+import { classes } from '@automapper/classes';
+import { CamelCaseNamingConvention, PascalCaseNamingConvention, SnakeCaseNamingConvention } from '@automapper/core';
 
 @Module({
   imports: [
@@ -25,6 +28,13 @@ import { ImageDetailsModule } from './modules/imageDetail/ImageDetail.module';
       validate: validate,
     }),
     ScheduleModule.forRoot(),
+    AutomapperModule.forRoot({
+      strategyInitializer: classes(),
+      namingConventions: {
+        source: new CamelCaseNamingConvention(),
+        destination: new SnakeCaseNamingConvention(),
+      },
+    }),
     TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     AuthModule,
     UsersModule,

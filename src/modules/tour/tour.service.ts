@@ -17,8 +17,8 @@ import { UsersService } from '../users/users.service';
 @Injectable()
 export class ToursService {
   constructor(
-    @InjectRepository(NativeTourRepository)
     @InjectRepository(ImageDetail)
+    @InjectRepository(NativeTourRepository)
     private readonly imageDetailRepository: Repository<ImageDetail>,
     private readonly nativeTourRepository: NativeTourRepository,
     private readonly imageDetailService: ImageDetailsService,
@@ -197,7 +197,7 @@ export class ToursService {
 
   async getTourDetail(tourId: number): Promise<TourDetailDto> {
     const tour = await this.nativeTourRepository.findOne({
-      where: { tourId },
+      where: { tour_id: tourId },
     });
 
     if (!tour) {
@@ -205,7 +205,7 @@ export class ToursService {
     }
 
     const imageDetails = await this.imageDetailRepository.find({
-      where: { tourId: tour.tourId },
+      where: { tour_id: tour.tourId },
     });
     // const avgRatingTour = await this.reviewService.calAvgRatingReviewForTour(
     //   tour.tourId,
@@ -218,16 +218,16 @@ export class ToursService {
     }
 
     const userViewDto: UserViewDto = {
-      userId: user.userId,
+      userId: user.user_id,
       role: user.role,
       address: user.address,
       language: user.language,
-      userName: user.userName,
-      userEmail: user.userEmail,
-      urlImage: user.urlImage,
+      userName: user.user_name,
+      userEmail: user.user_email,
+      urlImage: user.url_image,
       description: user.description,
-      phoneNumber: user.phoneNumber,
-      isEnabled: user.isEnabled,
+      phoneNumber: user.phone_number,
+      isEnabled: user.is_enabled,
     };
 
     // const timeBookStart: TimeBook = tour.timeBookStart
@@ -251,9 +251,9 @@ export class ToursService {
       destination: tour.destination,
       destinationDescription: tour.destinationDescription,
       images: imageDetails.map((image) => ({
-        imageId: image.imageId,
+        imageId: image.image_id,
         link: image.link,
-        tourId: image.tourId,
+        tourId: image.tour_id,
       })),
       // avgRating: avgRatingTour,
       userId: tour.userId,

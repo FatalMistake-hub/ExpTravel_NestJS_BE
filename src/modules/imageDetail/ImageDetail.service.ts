@@ -16,7 +16,7 @@ export class ImageDetailsService {
     const imageDetailEntities = imageDtos.map((imageDto) => {
       const imageDetail = new ImageDetail();
       imageDetail.link = imageDto.link;
-      imageDetail.tourId = imageDto.tourId;
+      imageDetail.tour_id = imageDto.tourId;
       return imageDetail;
     });
   
@@ -25,9 +25,9 @@ export class ImageDetailsService {
   
     // Map the saved entities back to DTOs for returning
     return savedImages.map((imageDetail) => ({
-      imageId: imageDetail.imageId,
+      imageId: imageDetail.image_id,
       link: imageDetail.link,
-      tourId: imageDetail.tourId,
+      tourId: imageDetail.tour_id,
     }));
   }
 
@@ -37,7 +37,7 @@ export class ImageDetailsService {
    */
   async deleteByImageId(id: string): Promise<void> {
     const image = await this.imageRepository.findOne({
-      where: { imageId: id },
+      where: { image_id: id },
     });
     if (!image) {
       throw new NotFoundException('Image not found');
@@ -53,27 +53,27 @@ export class ImageDetailsService {
    */
   async updateByImageId(imageDto: ImageDto, id: string): Promise<ImageDto> {
     const existingImage = await this.imageRepository.findOne({
-      where: { imageId: id },
+      where: { image_id: id },
     });
 
     if (existingImage) {
       existingImage.link = imageDto.link;
       const updatedImage = await this.imageRepository.save(existingImage);
       return {
-        imageId: updatedImage.imageId,
+        imageId: updatedImage.image_id,
         link: updatedImage.link,
-        tourId: updatedImage.tourId,
+        tourId: updatedImage.tour_id,
       };
     } else {
       const newImage = this.imageRepository.create({
         ...imageDto,
-        imageId: id,
+        image_id: id,
       });
       const savedImage = await this.imageRepository.save(newImage);
       return {
-        imageId: savedImage.imageId,
+        imageId: savedImage.image_id,
         link: savedImage.link,
-        tourId: savedImage.tourId,
+        tourId: savedImage.tour_id,
       };
     }
   }
@@ -85,9 +85,9 @@ export class ImageDetailsService {
   async getAllImage(): Promise<ImageViewDto[]> {
     const imageDetails = await this.imageRepository.find();
     return imageDetails.map((imageDetail) => ({
-      imageId: imageDetail.imageId,
+      imageId: imageDetail.image_id,
       link: imageDetail.link,
-      tourId: imageDetail.tourId,
+      tourId: imageDetail.tour_id,
     }));
   }
 }

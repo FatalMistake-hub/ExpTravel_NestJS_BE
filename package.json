@@ -9,7 +9,8 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "NODE_ENV=development nest build --webpack --webpackPath webpack-hmr.config.js --watch",
+    "start:dev/comment": "NODE_ENV=development nest build --webpack --webpackPath webpack-hmr.config.js --watch",
+    "start:dev": "NODE_ENV=development nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "NODE_ENV=production node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -25,6 +26,9 @@
     "@nestjs/swagger": "^6.3.0"
   },
   "dependencies": {
+    "@automapper/classes": "^8.8.1",
+    "@automapper/core": "^8.8.1",
+    "@automapper/nestjs": "^8.8.1",
     "@faker-js/faker": "^8.0.1",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.3.2",
@@ -49,9 +53,11 @@
     "rxjs": "^7.2.0",
     "speakeasy": "^2.0.0",
     "typeorm": "^0.3.15",
+    "typeorm-naming-strategies": "^4.1.0",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@automapper/types": "^6.3.1",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",

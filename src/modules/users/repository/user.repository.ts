@@ -12,7 +12,7 @@ export class NativeUserRepository extends Repository<User> {
     const query = `
       SELECT * FROM users
       INNER JOIN tours
-        ON users."userId" = tours.user_id
+        ON users.user_id = tours.user_id
       WHERE tours.tour_id = $1
     `;
     return await this.dataSource.query(query, [tourId]);

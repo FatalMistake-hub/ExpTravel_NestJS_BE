@@ -10,11 +10,11 @@ export abstract class BaseEntity extends TypeOrmBaseEntity {
     type: 'timestamp',
     update: false,
   })
-  createdAt: Date;
+  created_at: Date;
 
   @UpdateDateColumn({
     name: 'updated_at',
     type: 'timestamp',
   })
-  updatedAt: Date;
+  updated_at: Date;
 }

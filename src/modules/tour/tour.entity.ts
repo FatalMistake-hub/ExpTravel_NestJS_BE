@@ -25,7 +25,7 @@ import { BaseEntity } from 'src/base.entity';
 @Entity('tours')
 export class Tour extends BaseEntity {
   @PrimaryGeneratedColumn('identity', { type: 'bigint' ,name: 'tour_id'})
-  tourId: number;
+  tour_id: number;
 
   @Column({ name: 'title', nullable: true })
   @IsOptional()
@@ -41,11 +41,11 @@ export class Tour extends BaseEntity {
   city: string;
 
   @Column({ name: 'price_one_person', nullable: false })
-  priceOnePerson: number;
+  price_one_person: number;
 
   @Column({ name: 'image_main', nullable: false })
   @IsString()
-  imageMain: string;
+  image_main: string;
 
   @Column({ name: 'working', nullable: false })
   @IsString()
@@ -58,13 +58,13 @@ export class Tour extends BaseEntity {
   longitude: number;
 
   @Column({ name: 'time_slot_length', nullable: false })
-  timeSlotLength: number;
+  time_slot_length: number;
 
   @Column({ name: 'check_in', nullable: false, type: 'timestamp' })
-  checkIn: Date;
+  check_in: Date;
 
   @Column({ name: 'check_out', nullable: false, type: 'timestamp' })
-  checkOut: Date;
+  check_out: Date;
 
   // @Column({ name: 'time_book_start', nullable: false, type: 'time' })
   // timeBookStart: string;
@@ -76,15 +76,15 @@ export class Tour extends BaseEntity {
   destination: string;
 
   @Column({ name: 'destination_description', nullable: false })
-  destinationDescription: string;
+  destination_description: string;
 
   @Column({ name: 'is_deleted', default: false })
   @IsBoolean()
-  isDeleted: boolean;
+  is_deleted: boolean;
 
   @Column({ name: 'user_id', nullable: false })
   @IsUUID()
-  userId: string;
+  user_id: string;
 
   // Relationship: Many-to-One with User
   @ManyToOne(() => User, { eager: false, onDelete: 'CASCADE' })
@@ -98,14 +98,14 @@ export class Tour extends BaseEntity {
   })
   @JoinTable({
     name: 'tour_category',
-    joinColumn: { name: 'tour_id', referencedColumnName: 'tourId' },
-    inverseJoinColumn: { name: 'category_id', referencedColumnName: 'categoryId' },
+    joinColumn: { name: 'tour_id', referencedColumnName: 'tour_id' },
+    inverseJoinColumn: { name: 'category_id', referencedColumnName: 'category_id' },
   })
   categories: Category[];
 
   // Relationship: One-to-Many with ImageDetail
   @OneToMany(() => ImageDetail, (imageDetail) => imageDetail.tour, { cascade: true, eager: true })
-  imageDetails: ImageDetail[];
+  image_details: ImageDetail[];
 
   [key: string]: any;
 }

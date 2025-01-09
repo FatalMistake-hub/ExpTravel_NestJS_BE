@@ -12,7 +12,7 @@ import { Tour } from '../tour/tour.entity';
 @Entity('image_details')
 export class ImageDetail extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  imageId: string; // UUID is mapped to a string in TypeORM
+  image_id: string; // UUID is mapped to a string in TypeORM
 
   @Column({ name: 'link', nullable: false })
   @IsNotEmpty()
@@ -21,10 +21,10 @@ export class ImageDetail extends BaseEntity {
 
   @Column({ name: 'tour_id', nullable: false })
   @IsNumber()
-  tourId: number;
+  tour_id: number;
 
   // Many-to-One relationship with Tour
-  @ManyToOne(() => Tour, (tour) => tour.imageDetails, { eager: false, onDelete: 'CASCADE' })
+  @ManyToOne(() => Tour, (tour) => tour.image_details, { eager: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'tour_id' })
   tour: Tour;
 }

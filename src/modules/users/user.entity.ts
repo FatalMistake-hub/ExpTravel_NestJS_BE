@@ -10,21 +10,21 @@ export class User extends BaseEntity {
     example: '550e8400-e29b-41d4-a716-446655440000',
     description: 'Unique identifier for the user',
   })
-  userId: string;
+  user_id: string;
 
   @ApiProperty({
     example: 'john_doe',
     description: 'Unique username for the user',
   })
   @Column({ unique: true, length: 30 })
-  userName: string;
+  user_name: string;
 
   @ApiProperty({
     example: 'john_doe@gmail.com',
     description: 'Email address of the user',
   })
   @Column({ unique: true })
-  userEmail: string;
+  user_email: string;
 
   @ApiProperty({
     example: 'A passionate developer.',
@@ -45,14 +45,14 @@ export class User extends BaseEntity {
     description: 'Indicates if the user has a wallet',
   })
   @Column({ default: false })
-  isWallet: boolean;
+  is_wallet: boolean;
 
   @ApiProperty({
     example: '+123456789',
     description: 'Contact phone number of the user',
   })
   @Column({ nullable: true })
-  phoneNumber: string;
+  phone_number: string;
 
   @ApiProperty({
     example: 'en',
@@ -66,14 +66,14 @@ export class User extends BaseEntity {
     description: 'URL of the user profile image',
   })
   @Column({ nullable: true })
-  urlImage: string;
+  url_image: string;
 
   @ApiProperty({
     description: 'Password of the user',
   })
   @Column()
   @Exclude()
-  userPassword: string;
+  user_password: string;
 
   @ApiProperty({
     example: 'USER',
@@ -87,12 +87,12 @@ export class User extends BaseEntity {
     description: 'Additional authorization information',
   })
   @Column({ nullable: true })
-  accountAuthorize: string;
+  account_authorize: string;
 
   @ApiProperty({
     example: true,
     description: 'Indicates if the user account is enabled',
   })
   @Column({ default: true })
-  isEnabled: boolean;
+  is_enabled: boolean;
 }

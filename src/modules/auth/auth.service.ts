@@ -25,7 +25,7 @@ export class AuthService {
       return null;
     }
 
-    const isMatch = await bcrypt.compare(password, user.userPassword);
+    const isMatch = await bcrypt.compare(password, user.user_password);
 
     if (isMatch) {
       return user;
@@ -36,14 +36,16 @@ export class AuthService {
     jwtResquest: JwtResquest,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const user = await this.userService.findOne(jwtResquest.email); // 1.
-
+    if (!user) {
+      throw new UnauthorizedException('User not found'); // 4.
+    }
     const passwordMatched = await bcrypt.compare(
       jwtResquest.password,
-      user.userPassword,
+      user.user_password,
     );
 
     if (passwordMatched) {
-      delete user.userPassword;
+      delete user.user_password;
       return await this.authRefreshTokenService.generateTokenPair(user); // 2.
     } else {
       throw new UnauthorizedException('Password does not match'); // 5.

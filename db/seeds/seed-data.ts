@@ -15,9 +15,9 @@ export const seedData = async (manager: EntityManager): Promise<void> => {
     const encryptedPassword = await bcrypt.hash('123456', salt);
 
     const user = new User();
-    user.userName = faker.person.fullName();
-    user.userEmail = faker.internet.email();
-    user.userPassword = encryptedPassword;
+    user.user_name = faker.person.fullName();
+    user.user_email = faker.internet.email();
+    user.user_password = encryptedPassword;
 
     await manager.getRepository(User).save(user);
   }

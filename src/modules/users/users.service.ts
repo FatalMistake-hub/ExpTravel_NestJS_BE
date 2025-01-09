@@ -20,22 +20,22 @@ export class UsersService {
       throw new UnauthorizedException('Password does not match');
     }
     const user = new User();
-    user.userEmail = userRegistrationDto.userEmail;
-    user.userPassword = userRegistrationDto.userPassword;
-    user.userName = userRegistrationDto.userName;
+    user.user_email = userRegistrationDto.userEmail;
+    user.user_password = userRegistrationDto.userPassword;
+    user.user_name = userRegistrationDto.userName;
 
     const salt = await genSalt(); // 2.
-    user.userPassword = await hash(userRegistrationDto.userPassword, salt); // 3
+    user.user_password = await hash(userRegistrationDto.userPassword, salt); // 3
     return this.nativeUserRepository.save(user);
   }
   async findOne(email: string): Promise<User> {
-    return this.nativeUserRepository.findOne({ where: { userEmail: email } });
+    return this.nativeUserRepository.findOne({ where: { user_email: email } });
   }
   async findOneById(id: string): Promise<User> {
-    return this.nativeUserRepository.findOne({ where: { userId: id } });
+    return this.nativeUserRepository.findOne({ where: { user_id: id } });
   }
   async findOneByEmail(email: string): Promise<User> {
-    return this.nativeUserRepository.findOne({ where: { userEmail: email } });
+    return this.nativeUserRepository.findOne({ where: { user_email: email } });
   }
   async getUserByTourId(tourId: number): Promise<User> {
     return this.nativeUserRepository.getUserByTourId(tourId).then((res) => {
