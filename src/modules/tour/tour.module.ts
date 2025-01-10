@@ -14,6 +14,7 @@ import { User } from '../users/user.entity';
 import { UsersModule } from '../users/users.module';
 import { UsersService } from '../users/users.service';
 import { ImageDetail } from '../imageDetail/imageDetail.entity';
+import { TourProfile } from './tour.profile';
 
 @Module({
   imports: [
@@ -31,7 +32,7 @@ import { ImageDetail } from '../imageDetail/imageDetail.entity';
       inject: [ConfigService],
     }),
   ],
-  providers: [ToursService, NativeTourRepository],
+  providers: [ToursService, NativeTourRepository,TourProfile],
   exports: [ToursService, TypeOrmModule.forFeature([Tour])],
   controllers: [TourController],
 })

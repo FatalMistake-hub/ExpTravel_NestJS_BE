@@ -12,6 +12,7 @@ import {
 import { Type } from 'class-transformer';
 import { ImageDto } from 'src/modules/imageDetail/dto/image.dto';
 import { CategoryDto } from 'src/modules/category/dto/category.dto';
+import { AutoMap } from '@automapper/classes';
 
 export class TourCreateDto {
   // @ApiProperty({ description: 'Tour ID', example: 1, required: false })
@@ -22,6 +23,7 @@ export class TourCreateDto {
   @ApiProperty({ description: 'Title of the tour', example: 'Amazing Tour' })
   @IsNotEmpty({ message: 'Vui lòng nhập tiêu đề!' })
   @IsString()
+  @AutoMap()
   title: string;
 
   @ApiProperty({
@@ -30,6 +32,7 @@ export class TourCreateDto {
     required: false,
   })
   @IsNumber()
+  @AutoMap()
   rating?: number;
 
   @ApiProperty({
@@ -38,11 +41,13 @@ export class TourCreateDto {
   })
   @IsNotEmpty({ message: 'Vui lòng nhập tên thành phố!' })
   @IsString()
+  @AutoMap()
   city: string;
 
   @ApiProperty({ description: 'Price for one person', example: 100 })
   @IsNotEmpty({ message: 'Vui lòng nhập giá!' })
   @IsNumber()
+  @AutoMap()
   priceOnePerson: number;
 
   @ApiProperty({
@@ -50,8 +55,8 @@ export class TourCreateDto {
     example: 'http://example.com/image.jpg',
   })
   @IsNotEmpty({ message: 'Vui lòng nhập url ảnh!' })
-  @IsNotEmpty({ message: 'Vui lòng nhập url ảnh!' })
   @IsString()
+  @AutoMap()
   imageMain: string;
 
   @ApiProperty({
@@ -60,6 +65,7 @@ export class TourCreateDto {
   })
   @IsNotEmpty({ message: 'Vui lòng nhập công việc sẽ thực hiện!' })
   @IsString()
+  @AutoMap()
   working: string;
 
   @ApiProperty({
@@ -68,6 +74,7 @@ export class TourCreateDto {
   })
   @IsNotEmpty({ message: 'Vui lòng nhập vĩ độ!' })
   @IsString()
+  @AutoMap()
   latitude: string;
 
   @ApiProperty({
@@ -76,6 +83,7 @@ export class TourCreateDto {
   })
   @IsNotEmpty({ message: 'Vui lòng nhập kinh độ!' })
   @IsString()
+  @AutoMap()
   longitude: string;
 
   @ApiProperty({
@@ -83,11 +91,13 @@ export class TourCreateDto {
     example: 'Famous landmark',
   })
   @IsString()
+  @AutoMap()
   destination?: string;
 
   @ApiProperty({ description: 'Check-in time', example: '2023-12-25 10:00:00' })
   @IsDate()
   @Type(() => Date)
+  @AutoMap()
   checkIn: Date;
 
   @ApiProperty({
@@ -96,6 +106,7 @@ export class TourCreateDto {
   })
   @IsDate()
   @Type(() => Date)
+  @AutoMap()
   checkOut: Date;
 
   @ApiProperty({
@@ -104,11 +115,13 @@ export class TourCreateDto {
   })
   @IsNotEmpty({ message: 'Vui lòng nhập mô tả chi tiết!' })
   @IsString()
+  @AutoMap()
   destinationDescription: string;
 
   @ApiProperty({ description: 'Time slot length in minutes', example: 60 })
   @IsNotEmpty({ message: 'Vui lòng nhập khoảng thời gian!' })
   @IsNumber()
+  @AutoMap()
   timeSlotLength: number;
 
   @ApiProperty({ description: 'Categories of the tour', type: [CategoryDto] })
@@ -116,6 +129,7 @@ export class TourCreateDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => CategoryDto)
+  @AutoMap(() => [CategoryDto])
   categories: CategoryDto[];
 
   @ApiProperty({ description: 'List of images for the tour', type: [ImageDto] })
@@ -124,6 +138,7 @@ export class TourCreateDto {
   @IsArray()
   // @ValidateNested({ each: true })
   @Type(() => ImageDto)
+  @AutoMap(() => [ImageDto])
   imageDtoList?: ImageDto[];
 
   @ApiProperty({
@@ -133,6 +148,7 @@ export class TourCreateDto {
   @IsNotEmpty({ message: 'Vui lòng nhập ngày bắt đầu hành trình!' })
   @IsDate()
   @Type(() => Date)
+  @AutoMap()
   startDay: Date;
 
   @ApiProperty({
@@ -142,6 +158,7 @@ export class TourCreateDto {
   @IsNotEmpty({ message: 'Vui lòng nhập ngày kết thúc hành trình!' })
   @IsDate()
   @Type(() => Date)
+  @AutoMap()
   endDay: Date;
 
   // @ApiProperty({ description: 'Start time slot for bookings', type: TimeBookStart })
@@ -161,5 +178,6 @@ export class TourCreateDto {
     example: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
   })
   @IsUUID()
+  // @AutoMap()
   userId: string;
 }

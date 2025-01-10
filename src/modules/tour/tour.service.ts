@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ImageDto } from '../imageDetail/dto/image.dto';
@@ -13,6 +13,9 @@ import { TourViewDto } from './dto/tour-view.dto';
 import { NativeTourRepository } from './repository/tour.repository';
 import { Tour } from './tour.entity';
 import { UsersService } from '../users/users.service';
+import { InjectMapper } from '@automapper/nestjs';
+import { Mapper } from '@automapper/core';
+import { TourUpdateDto } from './dto/update-tour.dto';
 
 @Injectable()
 export class ToursService {
@@ -24,8 +27,8 @@ export class ToursService {
     private readonly imageDetailService: ImageDetailsService,
     // private readonly dayBookService: DayBookService,
     private readonly userService: UsersService,
-  ) // // private tourRepository: Repository<Tour> // private readonly timeBookDetailService: TimeBookDetailService,
-  {}
+    @InjectMapper() private readonly mapper: Mapper, // // private tourRepository: Repository<Tour> // private readonly timeBookDetailService: TimeBookDetailService,
+  ) {}
   async createTour(
     tourDto: TourCreateDto,
     userId: string,
@@ -44,29 +47,30 @@ export class ToursService {
     // START TIME AND END TIME
     // const startTime = `${tourDto.timeBookStart.hour}:${tourDto.timeBookStart.minutes}`;
     // const endTime = `${tourDto.timeBookEnd.hour}:${tourDto.timeBookEnd.minutes}`;
-    console.log(tourDto, tourId, userId);
+
     const newTour = this.nativeTourRepository.create({
-      tourId,
-      userId,
+      tour_id: tourId,
+      user_id: userId,
       categories: tourDto.categories,
       city: tourDto.city,
       destination: tourDto.destination,
-      destinationDescription: tourDto.destinationDescription,
       rating: tourDto.rating,
       latitude: parseFloat(tourDto.latitude),
       longitude: parseFloat(tourDto.longitude),
       title: tourDto.title,
       working: tourDto.working,
-      imageMain: tourDto.imageMain,
-      checkIn: tourDto.checkIn,
-      checkOut: tourDto.checkOut,
-      timeSlotLength: tourDto.timeSlotLength,
+      image_main: tourDto.imageMain,
+      check_in: tourDto.checkIn,
+      check_out: tourDto.checkOut,
+      time_slot_length: tourDto.timeSlotLength,
       // priceOnePerson: parseFloat(tourDto.priceOnePerson),
-      priceOnePerson: tourDto.priceOnePerson,
+      price_one_person: tourDto.priceOnePerson,
       // timeBookStart: startTime,
       // timeBookEnd: endTime,
+      ...this.mapper.map(tourDto, TourCreateDto, Tour),
+      destination_description: tourDto.destinationDescription,
     });
-
+    console.log(tourDto, newTour);
     await this.nativeTourRepository.save(newTour);
 
     // IMAGE PROCESS
@@ -116,7 +120,7 @@ export class ToursService {
       await this.nativeTourRepository.findAndCount({
         take: pageSize,
         skip: (pageNo - 1) * pageSize,
-        order: { createdAt: 'DESC' }, // Assuming you have a `createdAt` field
+        order: { created_at: 'DESC' }, // Assuming you have a `created_at` field
         relations: ['categories'],
       });
     console.log(tourList, totalElements);
@@ -205,13 +209,13 @@ export class ToursService {
     }
 
     const imageDetails = await this.imageDetailRepository.find({
-      where: { tour_id: tour.tourId },
+      where: { tour_id: tourId },
     });
     // const avgRatingTour = await this.reviewService.calAvgRatingReviewForTour(
     //   tour.tourId,
     // );
-    const user = await this.userService.getUserByTourId(tour.tourId);
-    console.log(imageDetails, user);
+    const user = await this.userService.getUserByTourId(tourId);
+    console.log(imageDetails);
 
     if (!user) {
       throw new NotFoundException('User not found for the tour !!');
@@ -239,32 +243,50 @@ export class ToursService {
     //   : null;
 
     const tourDetailDto: TourDetailDto = {
-      tourId: tour.tourId,
+      tourId: tour.tour_id,
       title: tour.title,
       rating: tour.rating,
       city: tour.city,
-      priceOnePerson: tour.priceOnePerson,
-      imageMain: tour.imageMain,
+      priceOnePerson: tour.price_one_person,
+      imageMain: tour.image_main,
       working: tour.working,
       latitude: tour.latitude,
       longitude: tour.longitude,
       destination: tour.destination,
-      destinationDescription: tour.destinationDescription,
+      destinationDescription: tour.destination_description,
       images: imageDetails.map((image) => ({
         imageId: image.image_id,
         link: image.link,
         tourId: image.tour_id,
       })),
       // avgRating: avgRatingTour,
-      userId: tour.userId,
-      timeSlotLength: tour.timeSlotLength,
-      isDeleted: tour.isDeleted,
+      userId: tour.user_id,
+      timeSlotLength: tour.time_slot_length,
+      isDeleted: tour.is_deleted,
       user: userViewDto,
       // timeBookStart,
       // timeBookEnd,
     };
 
     return tourDetailDto;
+  }
+  async updateTourByField(
+    id: number,
+    updateTourDto: TourUpdateDto,
+  ): Promise<Tour> {
+    const tour = await this.nativeTourRepository.findOne({
+      where: { tour_id: id },
+    });
+    if (!tour) {
+      throw new NotFoundException(`Tour with ID ${id} not found`);
+    }
+    // Merge the existing tour with the updated fields
+    const updatedTour = this.nativeTourRepository.merge(tour, {
+      ...updateTourDto,
+      latitude: parseFloat(updateTourDto.latitude),
+      longitude: parseFloat(updateTourDto.longitude),
+    });
+    return this.nativeTourRepository.save(updatedTour);
   }
   async mappingTourList(tourList?: Tour[]): Promise<TourViewDto[]> {
     const tourViewDtos: TourViewDto[] = [];
@@ -295,5 +317,18 @@ export class ToursService {
       tourViewDtos.push(tourViewDto);
     }
     return tourViewDtos;
+  }
+  async deleteByTourId(tourId: number): Promise<void> {
+    const tour = await this.nativeTourRepository.findOne({
+      where: { tour_id: tourId },
+    });
+    if (tour.is_deleted) {
+      throw new NotFoundException(`Tour with ID ${tourId} is already deleted`);
+    }
+    if (!tour) {
+      throw new NotFoundException(`Tour with ID ${tourId} not found`);
+    }
+    tour.is_deleted = true;
+    await this.nativeTourRepository.save(tour);
   }
 }

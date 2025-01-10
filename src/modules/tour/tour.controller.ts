@@ -2,10 +2,12 @@ import {
   Body,
   Controller,
   DefaultValuePipe,
+  Delete,
   Get,
   HttpStatus,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   Req,
@@ -22,13 +24,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Request } from 'express';
-import { ToursService } from './tour.service';
-import { TourCreateDto } from './dto/create-tour.dto';
-import { Tour } from './tour.entity';
-import { Pagination } from 'nestjs-typeorm-paginate';
-import { ViewPortSearchDto } from './dto/view-port-search.dto';
-import { TourResponseDto } from './dto/response-tour.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { TourCreateDto } from './dto/create-tour.dto';
+import { TourResponseDto } from './dto/response-tour.dto';
+import { TourUpdateDto } from './dto/update-tour.dto';
+import { ViewPortSearchDto } from './dto/view-port-search.dto';
+import { ToursService } from './tour.service';
 
 @ApiTags('Tour')
 @ApiBearerAuth() // Indicates this controller uses bearer token authentication
@@ -45,7 +46,7 @@ export class TourController {
   @ApiResponse({ status: 201, description: 'Tour created successfully' })
   @ApiBody({ type: TourCreateDto })
   async createTour(@Body() tourDto: TourCreateDto, @Req() request: Request) {
-    const userId = request.user?.['userId'];
+    const userId = request.user?.['user_id'];
     await this.tourService.createTour(tourDto, userId);
     return { data: tourDto, statusCode: HttpStatus.CREATED };
   }
@@ -89,12 +90,11 @@ export class TourController {
     required: false,
     description: 'Page size',
   })
-  @ApiBody({ type: ViewPortSearchDto })
   async searchViewPort(
     @Query('pageNo', new DefaultValuePipe(1), ParseIntPipe) pageNo: number = 1,
     @Query('pageSize', new DefaultValuePipe(5), ParseIntPipe)
     pageSize: number = 5,
-    @Body() viewPortSearchDto: ViewPortSearchDto,
+    @Query() viewPortSearchDto: ViewPortSearchDto,
   ) {
     pageSize = pageSize > 100 ? 100 : pageSize;
     return this.tourService.getTourViewPort(
@@ -168,26 +168,27 @@ export class TourController {
     return this.tourService.getTourDetail(tourId);
   }
 
-  // @Delete('tour-delete/:id')
-  // @ApiOperation({ summary: 'Delete a tour by ID' })
-  // @ApiResponse({ status: 204, description: 'Tour deleted successfully' })
-  // @ApiParam({ name: 'id', type: Number, description: 'Tour ID' })
-  // async deleteTour(@Param('id') id: number) {
-  //   await this.tourService.deleteByTourId(id);
-  //   return { statusCode: HttpStatus.NO_CONTENT };
-  // }
+  @Delete('tour-delete/:id')
+  @ApiOperation({ summary: 'Delete a tour by ID' })
+  @ApiResponse({ status: 204, description: 'Tour deleted successfully' })
+  @ApiParam({ name: 'id', type: Number, description: 'Tour ID' })
+  async deleteTour(@Param('id') id: number) {
+    await this.tourService.deleteByTourId(id);
+    return { statusCode: HttpStatus.NO_CONTENT };
+  }
 
-  // @Patch('tour-update/:id')
-  // @ApiOperation({ summary: 'Update fields of a tour' })
-  // @ApiResponse({ status: 200, description: 'Tour updated successfully' })
-  // @ApiParam({ name: 'id', type: Number, description: 'Tour ID' })
-  // @ApiBody({ description: 'Fields to update', type: Object })
-  // async updateTour(
-  //   @Param('id') id: number,
-  //   @Body() fields: Record<string, any>,
-  // ) {
-  //   return this.tourService.updateTourByField(id, fields);
-  // }
+  @Patch('tour-update/:id')
+  @ApiOperation({ summary: 'Update fields of a tour' })
+  @ApiResponse({ status: 200, description: 'Tour updated successfully' })
+  @ApiParam({ name: 'id', type: Number, description: 'Tour ID' })
+  @ApiBody({ type: TourUpdateDto, description: 'Fields to update' })
+  async updateTour(
+    @Param('id') id: number,
+    @Body() fields: Record<string, any>,
+  ) {
+    await this.tourService.updateTourByField(id, fields);
+    return { message: 'Update Success', statusCode: HttpStatus.OK };
+  }
 
   // @Patch('tour-update-time/:id')
   // @ApiOperation({ summary: 'Update start and end time of a tour' })

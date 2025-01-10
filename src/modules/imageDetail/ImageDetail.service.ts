@@ -11,6 +11,19 @@ export class ImageDetailsService {
     @InjectRepository(ImageDetail)
     private imageRepository: Repository<ImageDetail>, // 1.
   ) {}
+  /**
+   * Retrieves all images from the database.
+   * @returns List of ImageView DTOs.
+   */
+  async getAllImage(): Promise<ImageViewDto[]> {
+    const imageDetails = await this.imageRepository.find();
+    return imageDetails.map((imageDetail) => ({
+      imageId: imageDetail.image_id,
+      link: imageDetail.link,
+      tourId: imageDetail.tour_id,
+    }));
+  }
+
   async createImageDetailForTour(imageDtos: ImageDto[]): Promise<ImageDto[]> {
     // Create a list of ImageDetail entities from the provided DTOs
     const imageDetailEntities = imageDtos.map((imageDto) => {
@@ -19,30 +32,16 @@ export class ImageDetailsService {
       imageDetail.tour_id = imageDto.tourId;
       return imageDetail;
     });
-  
+
     // Save the entities in bulk to the database
     const savedImages = await this.imageRepository.save(imageDetailEntities);
-  
+
     // Map the saved entities back to DTOs for returning
     return savedImages.map((imageDetail) => ({
       imageId: imageDetail.image_id,
       link: imageDetail.link,
       tourId: imageDetail.tour_id,
     }));
-  }
-
-  /**
-   * Deletes an image by its ID.
-   * @param id UUID of the image to be deleted.
-   */
-  async deleteByImageId(id: string): Promise<void> {
-    const image = await this.imageRepository.findOne({
-      where: { image_id: id },
-    });
-    if (!image) {
-      throw new NotFoundException('Image not found');
-    }
-    await this.imageRepository.delete(id);
   }
 
   /**
@@ -79,15 +78,16 @@ export class ImageDetailsService {
   }
 
   /**
-   * Retrieves all images from the database.
-   * @returns List of ImageView DTOs.
+   * Deletes an image by its ID.
+   * @param id UUID of the image to be deleted.
    */
-  async getAllImage(): Promise<ImageViewDto[]> {
-    const imageDetails = await this.imageRepository.find();
-    return imageDetails.map((imageDetail) => ({
-      imageId: imageDetail.image_id,
-      link: imageDetail.link,
-      tourId: imageDetail.tour_id,
-    }));
+  async deleteByImageId(id: string): Promise<void> {
+    const image = await this.imageRepository.findOne({
+      where: { image_id: id },
+    });
+    if (!image) {
+      throw new NotFoundException('Image not found');
+    }
+    await this.imageRepository.delete(id);
   }
 }
