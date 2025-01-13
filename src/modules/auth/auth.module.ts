@@ -36,6 +36,6 @@ import { LocalStrategy } from './strategy/local-stategy';
     AuthRefreshTokenService,
   ],
   controllers: [AuthController],
-  exports: [AuthService, AuthRefreshTokenService],
+  exports: [AuthService, AuthRefreshTokenService, JwtModule],
 })
 export class AuthModule {}

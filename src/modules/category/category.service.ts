@@ -1,5 +1,5 @@
-import { Mapper } from '@automapper/core';
-import { InjectMapper } from '@automapper/nestjs';
+import { createMap, Mapper } from '@automapper/core';
+import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToInstance } from 'class-transformer';
@@ -8,13 +8,15 @@ import { Category } from './category.entity';
 import { CategoryDto } from './dto/category.dto';
 
 @Injectable()
-export class CategoriesService {
+export class CategoriesService
+  // extends AutomapperProfile
+{
   constructor(
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
     @InjectMapper() private readonly mapper: Mapper,
-  ) {}
-
+  ) {
+  }
   async getAll(): Promise<CategoryDto[]> {
     const categories = await this.categoryRepository.find();
     return plainToInstance(CategoryDto, categories);
@@ -56,11 +58,11 @@ export class CategoriesService {
     if (!category) {
       categoryDto.categoryId = id;
       category = this.categoryRepository.create(categoryDto);
-      await this.categoryRepository.save(category);
     } else {
       category.categoryName = categoryDto.categoryName;
-      category = await this.categoryRepository.save(category);
     }
+    const updated_category = this.mapper.map(category, Category, CategoryDto);
+    category = await this.categoryRepository.save(updated_category);
     return plainToInstance(CategoryDto, category);
   }
 }

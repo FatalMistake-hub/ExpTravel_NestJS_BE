@@ -38,8 +38,9 @@ export class CategoryController {
   @ApiParam({ name: 'id', description: 'Category ID' })
   @ApiResponse({ status: 204, description: 'Category deleted successfully' })
   @ApiResponse({ status: 404, description: 'Category not found' })
-  async deleteCategory(@Param('id') id: number): Promise<void> {
+  async deleteCategory(@Param('id') id: number): Promise<HttpStatus> {
     await this.categoriesService.deleteByCategoryId(id);
+    return HttpStatus.OK;
   }
 
   @Patch('/update/:id')
