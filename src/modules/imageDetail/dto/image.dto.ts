@@ -7,6 +7,6 @@ export class ImageDto {
   @IsString()
   link: string;
 
-  @IsString()
+  @IsNumber()
   tourId: number;
 }

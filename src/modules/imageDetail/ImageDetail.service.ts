@@ -54,7 +54,7 @@ export class ImageDetailsService {
     const existingImage = await this.imageRepository.findOne({
       where: { image_id: id },
     });
-
+    console.log(existingImage)
     if (existingImage) {
       existingImage.link = imageDto.link;
       const updatedImage = await this.imageRepository.save(existingImage);

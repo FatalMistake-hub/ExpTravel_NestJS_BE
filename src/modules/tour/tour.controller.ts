@@ -24,6 +24,8 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Request } from 'express';
+import { Roles } from 'src/common/decorator/role.decorator';
+import { RoleEnum } from 'src/utils/enum';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { TourCreateDto } from './dto/create-tour.dto';
 import { TourResponseDto } from './dto/response-tour.dto';
@@ -52,6 +54,7 @@ export class TourController {
   }
 
   @Get('all')
+  @Roles(RoleEnum.ADMIN)
   @ApiOperation({ summary: 'Get all tours' })
   @ApiResponse({ status: 200, description: 'List of all tours' })
   @ApiQuery({

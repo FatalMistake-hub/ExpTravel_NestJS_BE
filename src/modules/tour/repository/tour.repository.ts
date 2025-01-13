@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { Tour } from '../tour.entity';
-  
+
 @Injectable()
 export class NativeTourRepository extends Repository<Tour> {
   constructor(private readonly dataSource: DataSource) {
@@ -66,7 +66,10 @@ export class NativeTourRepository extends Repository<Tour> {
 
   async getAllTour(offset: number, limit: number) {
     const query = `
-      SELECT * FROM tours WHERE tours.is_deleted = false
+      SELECT * FROM tours AS t
+      INNER JOIN tour_category as tc ON t.tour_id = tc.tour_id
+      INNER JOIN categories AS c ON c.category_id = tc.category_id
+      WHERE t.is_deleted = false
       LIMIT $1 OFFSET $2
     `;
     return await this.dataSource.query(query, [limit, offset]);

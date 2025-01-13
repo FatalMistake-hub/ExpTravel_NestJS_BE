@@ -11,15 +11,16 @@ import { TourController } from './tour.controller';
 import { Tour } from './tour.entity';
 import { ToursService } from './tour.service';
 import { AuthModule } from '../auth/auth.module';
+import { RolesGuard } from '../auth/guard/role.guard';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Tour, User, ImageDetail]),
     UsersModule,
     ImageDetailsModule,
-    AuthModule
+    AuthModule,
   ],
-  providers: [ToursService, NativeTourRepository],
+  providers: [ToursService, NativeTourRepository, RolesGuard],
   exports: [ToursService, TypeOrmModule.forFeature([Tour])],
   controllers: [TourController],
 })

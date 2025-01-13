@@ -84,7 +84,12 @@ export class AuthRefreshTokenService {
     currentRefreshToken?: string,
     currentRefreshTokenExpiresAt?: Date,
   ) {
-    const payload = { email: user.user_email, sub: user.user_id };
+    const payload = {
+      email: user.user_email,
+      sub: user.user_id,
+      username: user.user_name,
+      role: user.role,
+    };
 
     return {
       accessToken: this.jwtService.sign(payload), // jwt module is configured in auth.module.ts for access token

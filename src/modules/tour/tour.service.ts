@@ -116,13 +116,12 @@ export class ToursService {
   }
   async getAll(pageNo: number, pageSize: number): Promise<TourResponseDto> {
     // Pagination
-    const [tourList, totalElements] =
-      await this.nativeTourRepository.findAndCount({
-        take: pageSize,
-        skip: (pageNo - 1) * pageSize,
-        order: { created_at: 'DESC' }, // Assuming you have a `created_at` field
-        relations: ['categories'],
-      });
+    const tourList =
+      await this.nativeTourRepository.getAllTour(
+        (pageNo - 1) * pageSize,
+        pageSize,
+      );
+    const totalElements = tourList.length;
     console.log(tourList, totalElements);
     // Prepare the response
     const tourViewDtos: TourViewDto[] = await this.mappingTourList(tourList);
@@ -215,7 +214,6 @@ export class ToursService {
     //   tour.tourId,
     // );
     const user = await this.userService.getUserByTourId(tourId);
-    console.log(imageDetails);
 
     if (!user) {
       throw new NotFoundException('User not found for the tour !!');
