@@ -39,7 +39,6 @@ import { ToursService } from './tour.service';
 export class TourController {
   constructor(
     private readonly tourService: ToursService,
-    private readonly jwtService: JwtService,
   ) {}
 
   @Post('create')
@@ -54,7 +53,7 @@ export class TourController {
   }
 
   @Get('all')
-  @Roles(RoleEnum.ADMIN)
+  @Roles(RoleEnum.USER)
   @ApiOperation({ summary: 'Get all tours' })
   @ApiResponse({ status: 200, description: 'List of all tours' })
   @ApiQuery({

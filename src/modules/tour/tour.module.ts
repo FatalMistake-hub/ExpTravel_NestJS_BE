@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthModule } from '../auth/auth.module';
 import { ImageDetail } from '../imageDetail/imageDetail.entity';
 import { ImageDetailsModule } from '../imageDetail/ImageDetail.module';
 import { User } from '../users/user.entity';
@@ -10,17 +9,15 @@ import { NativeTourRepository } from './repository/tour.repository';
 import { TourController } from './tour.controller';
 import { Tour } from './tour.entity';
 import { ToursService } from './tour.service';
-import { AuthModule } from '../auth/auth.module';
-import { RolesGuard } from '../auth/guard/role.guard';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Tour, User, ImageDetail]),
     UsersModule,
     ImageDetailsModule,
-    AuthModule,
+    // AuthModule,
   ],
-  providers: [ToursService, NativeTourRepository, RolesGuard],
+  providers: [ToursService, NativeTourRepository],
   exports: [ToursService, TypeOrmModule.forFeature([Tour])],
   controllers: [TourController],
 })

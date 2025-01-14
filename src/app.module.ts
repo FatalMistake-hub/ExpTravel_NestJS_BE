@@ -10,7 +10,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
 import { SeedModule } from './seed/seed.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { AllExceptionsFilter } from './common/filters/AllExceptionsFilter';
 import { CategoriesModule } from './modules/category/category.module';
 import { ToursModule } from './modules/tour/tour.module';
@@ -18,6 +18,8 @@ import { ImageDetailsModule } from './modules/imageDetail/ImageDetail.module';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { CamelCaseNamingConvention, PascalCaseNamingConvention, SnakeCaseNamingConvention } from '@automapper/core';
+import { RolesGuard } from './modules/auth/guard/role.guard';
+import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
 
 @Module({
   imports: [
@@ -44,14 +46,18 @@ import { CamelCaseNamingConvention, PascalCaseNamingConvention, SnakeCaseNamingC
     SeedModule,
   ],
   providers: [
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard,
-    // },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
     // {
     //   provide: APP_FILTER,
     //   useClass: AllExceptionsFilter,
     // },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class AppModule implements NestModule {
