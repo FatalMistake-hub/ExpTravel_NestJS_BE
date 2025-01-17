@@ -1,25 +1,33 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // import { DataSource } from 'typeorm';
+import { classes } from '@automapper/classes';
+import {
+  CamelCaseNamingConvention,
+  SnakeCaseNamingConvention
+} from '@automapper/core';
+import { AutomapperModule } from '@automapper/nestjs';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 import { typeOrmAsyncConfig } from 'db/data-source';
 import { validate } from 'env.validation';
+import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import configuration from './config/configuration';
 import { AuthModule } from './modules/auth/auth.module';
+import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
+import { RolesGuard } from './modules/auth/guard/role.guard';
+import { CategoriesModule } from './modules/category/category.module';
+import { DayBookModule } from './modules/dayBook/dayBook.module';
+import { ImageDetailsModule } from './modules/imageDetail/ImageDetail.module';
+import { TimeBookDetailModule } from './modules/time-book-detail/timeBookDetail.module';
+import { ToursModule } from './modules/tour/tour.module';
 import { UsersModule } from './modules/users/users.module';
 import { SeedModule } from './seed/seed.module';
-import { LoggerMiddleware } from './common/middleware/logger.middleware';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
-import { AllExceptionsFilter } from './common/filters/AllExceptionsFilter';
-import { CategoriesModule } from './modules/category/category.module';
-import { ToursModule } from './modules/tour/tour.module';
-import { ImageDetailsModule } from './modules/imageDetail/ImageDetail.module';
-import { AutomapperModule } from '@automapper/nestjs';
-import { classes } from '@automapper/classes';
-import { CamelCaseNamingConvention, PascalCaseNamingConvention, SnakeCaseNamingConvention } from '@automapper/core';
-import { RolesGuard } from './modules/auth/guard/role.guard';
-import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
+import { TimebãookdetailController } from './modules/time-book-detail/timeBookDetail.controller';
+import { TimebookdetailService } from './modules/time-book-detail/timeBookDetail.service';
+import { DayBookController } from './modules/dayBook/daybook.controller';
+import { DayBookService } from './modules/dayBook/dayBook.service';
 
 @Module({
   imports: [
@@ -44,6 +52,8 @@ import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
     ToursModule,
     ImageDetailsModule,
     SeedModule,
+    DayBookModule,
+    TimeBookDetailModule,
   ],
   providers: [
     {
@@ -58,7 +68,10 @@ import { JwtAuthGuard } from './modules/auth/guard/jwt-auth.guard';
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
+    DayBookService,
+    TimebookdetailService,
   ],
+  controllers: [DayBookController, TimebãookdetailController],
 })
 export class AppModule implements NestModule {
   constructor(/*private dataSource: DataSource*/) {
@@ -69,7 +82,7 @@ export class AppModule implements NestModule {
     // consumer
     //   .apply(LoggerMiddleware)
     //   .forRoutes({ path: 'songs', method: RequestMethod.POST }); //option no 2
-
+    console.log(typeOrmAsyncConfig);
     consumer.apply(LoggerMiddleware).forRoutes('*'); //option no 3
   }
 }

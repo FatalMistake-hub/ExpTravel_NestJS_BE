@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { UserRegistrationDto } from './dto/create-user.dto';
 import { User } from './user.entity';
 import { genSalt, hash } from 'bcryptjs';
-import { NativeUserRepository } from './repository/user.repository';
+import { NativeUserRepository } from '../../repository/user.repository';
 
 @Injectable()
 export class UsersService {

@@ -5,12 +5,16 @@ import { Category } from 'src/modules/category/category.entity';
 import { Tour } from 'src/modules/tour/tour.entity';
 import { ImageDetail } from 'src/modules/imageDetail/imageDetail.entity';
 import { faker } from '@faker-js/faker/locale/vi';
+import { DayBook } from 'src/modules/dayBook/dayBook.entity';
+import { TimeBookDetail } from 'src/modules/time-book-detail/timeBookDetail.entity';
 
 export const seedData = async (manager: EntityManager): Promise<void> => {
   await seedUsers(manager);
   await seedCategories(manager);
   await seedTours(manager);
   await seedImageDetails(manager);
+  await seedDayBooks(manager);
+  await seedTimeBookDetails(manager);
 };
 
 async function seedUsers(manager: EntityManager) {
@@ -79,4 +83,35 @@ async function seedImageDetails(manager: EntityManager) {
   });
 
   await manager.getRepository(ImageDetail).save(imageDetails);
+}
+
+async function seedDayBooks(manager: EntityManager) {
+  const tours = await manager.getRepository(Tour).find();
+
+  const dayBooks = Array.from({ length: 10 }).map(() => {
+    const dayBook = new DayBook();
+    dayBook.date_name = faker.date.future();
+    dayBook.status = faker.lorem.word();
+    dayBook.is_deleted = false;
+    dayBook.tour = faker.helpers.arrayElement(tours);
+    return dayBook;
+  });
+
+  await manager.getRepository(DayBook).save(dayBooks);
+}
+
+async function seedTimeBookDetails(manager: EntityManager) {
+  const dayBooks = await manager.getRepository(DayBook).find();
+
+  const timeBookDetails = Array.from({ length: 20 }).map(() => {
+    const timeBookDetail = new TimeBookDetail();
+    timeBookDetail.start_time = faker.date.recent().toISOString().split('T')[1].split('.')[0];
+    timeBookDetail.end_time = faker.date.recent().toISOString().split('T')[1].split('.')[0];
+    timeBookDetail.is_payment = faker.datatype.boolean();
+    timeBookDetail.is_deleted = false;
+    timeBookDetail.day_book = faker.helpers.arrayElement(dayBooks);
+    return timeBookDetail;
+  });
+
+  await manager.getRepository(TimeBookDetail).save(timeBookDetails);
 }

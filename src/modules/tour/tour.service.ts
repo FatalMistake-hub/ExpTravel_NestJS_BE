@@ -10,7 +10,7 @@ import { TourCreateDto } from './dto/create-tour.dto';
 import { TourResponseDto } from './dto/response-tour.dto';
 import { TourDetailDto } from './dto/tour-detail.dto';
 import { TourViewDto } from './dto/tour-view.dto';
-import { NativeTourRepository } from './repository/tour.repository';
+import { NativeTourRepository } from '../../repository/tour.repository';
 import { Tour } from './tour.entity';
 import { UsersService } from '../users/users.service';
 import { InjectMapper } from '@automapper/nestjs';

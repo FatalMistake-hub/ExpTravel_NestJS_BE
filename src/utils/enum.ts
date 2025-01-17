@@ -3,3 +3,6 @@ export enum RoleEnum {
   USER = 'USER',
   OWNER = 'OWNER',
 }
+export enum DayBookStatusEnum {
+  AVAILABLE = 'AVAILABLE',
+}

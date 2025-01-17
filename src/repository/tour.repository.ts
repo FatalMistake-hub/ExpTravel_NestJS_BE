@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { Tour } from '../tour.entity';
+import { Tour } from '../modules/tour/tour.entity';
 
 @Injectable()
 export class NativeTourRepository extends Repository<Tour> {

@@ -22,6 +22,7 @@ import { Category } from '../category/category.entity';
 import { ImageDetail } from '../imageDetail/imageDetail.entity';
 import { BaseEntity } from 'src/base.entity';
 import { AutoMap } from '@automapper/classes';
+import { DayBook } from '../dayBook/dayBook.entity';
 
 @Entity('tours')
 export class Tour extends BaseEntity {
@@ -132,6 +133,13 @@ export class Tour extends BaseEntity {
   })
   @AutoMap(() => [ImageDetail])
   image_details: ImageDetail[];
+
+  @OneToMany(() => ImageDetail, (imageDetail) => imageDetail.tour, {
+    cascade: true,
+    eager: true,
+  })
+  @AutoMap(() => [DayBook])
+  day_book: DayBook[];
 
   [key: string]: any;
 }
