@@ -7,14 +7,15 @@ import { ImageDetail } from 'src/modules/imageDetail/imageDetail.entity';
 import { faker } from '@faker-js/faker/locale/vi';
 import { DayBook } from 'src/modules/dayBook/dayBook.entity';
 import { TimeBookDetail } from 'src/modules/time-book-detail/timeBookDetail.entity';
+import { DayBookStatusEnum } from 'src/utils/enum';
 
 export const seedData = async (manager: EntityManager): Promise<void> => {
   await seedUsers(manager);
   await seedCategories(manager);
   await seedTours(manager);
   await seedImageDetails(manager);
-  await seedDayBooks(manager);
-  await seedTimeBookDetails(manager);
+  // await seedDayBooks(manager);
+  // await seedTimeBookDetails(manager);
 };
 
 async function seedUsers(manager: EntityManager) {
@@ -91,7 +92,7 @@ async function seedDayBooks(manager: EntityManager) {
   const dayBooks = Array.from({ length: 10 }).map(() => {
     const dayBook = new DayBook();
     dayBook.date_name = faker.date.future();
-    dayBook.status = faker.lorem.word();
+    dayBook.status = faker.helpers.arrayElement(Object.values(DayBookStatusEnum));
     dayBook.is_deleted = false;
     dayBook.tour = faker.helpers.arrayElement(tours);
     return dayBook;
@@ -115,3 +116,4 @@ async function seedTimeBookDetails(manager: EntityManager) {
 
   await manager.getRepository(TimeBookDetail).save(timeBookDetails);
 }
+ 

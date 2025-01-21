@@ -1,4 +1,6 @@
 import { ImageViewDto } from "src/modules/imageDetail/dto/image-view.dto";
+import { TimeBookEndDto } from "src/modules/time-book-detail/dto/time-book-end.dto";
+import { TimeBookStartDto } from "src/modules/time-book-detail/dto/time-book-start.dto";
 import { UserViewDto } from "src/modules/users/dto/user-view.dto";
 
 export class TourDetailDto {
@@ -34,9 +36,9 @@ export class TourDetailDto {
 
   userId: string;
 
-  // timeBookStart: TimeBook;
+  timeBookStart: TimeBookStartDto;
 
-  // timeBookEnd: TimeBook;
+  timeBookEnd: TimeBookEndDto;
 
   user: UserViewDto;
 }

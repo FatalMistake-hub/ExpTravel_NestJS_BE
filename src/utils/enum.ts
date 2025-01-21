@@ -5,4 +5,5 @@ export enum RoleEnum {
 }
 export enum DayBookStatusEnum {
   AVAILABLE = 'AVAILABLE',
+  UNAVAILABLE = 'UNAVAILABLE',
 }

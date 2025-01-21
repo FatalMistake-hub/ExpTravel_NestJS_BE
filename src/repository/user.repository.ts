@@ -17,4 +17,12 @@ export class NativeUserRepository extends Repository<User> {
     `;
     return await this.dataSource.query(query, [tourId]);
   }
+  async updateRole(userId: string, role: string) {
+    const query = `
+      UPDATE users
+      SET role = $2
+      WHERE user_id = $1
+    `;
+    return await this.dataSource.query(query, [userId, role]);
+  }
 }

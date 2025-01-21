@@ -8,14 +8,19 @@ import { Category } from './category.entity';
 import { CategoryDto } from './dto/category.dto';
 
 @Injectable()
-export class CategoriesService
-  // extends AutomapperProfile
-{
+export class CategoriesService extends AutomapperProfile {
   constructor(
     @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
-    @InjectMapper() private readonly mapper: Mapper,
+    @InjectMapper() mapper: Mapper,
   ) {
+    super(mapper);
+  }
+  override get profile() {
+    return (mapper: Mapper) => {
+      createMap(mapper, Category, CategoryDto);
+      createMap(mapper, CategoryDto, Category);
+    };
   }
   async getAll(): Promise<CategoryDto[]> {
     const categories = await this.categoryRepository.find();

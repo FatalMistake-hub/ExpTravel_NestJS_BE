@@ -4,7 +4,6 @@ import {
   IsUUID,
   IsNumber,
   IsString,
-  IsDate,
   IsArray,
   ValidateNested,
   IsOptional,
@@ -13,6 +12,8 @@ import { Type } from 'class-transformer';
 import { ImageDto } from 'src/modules/imageDetail/dto/image.dto';
 import { CategoryDto } from 'src/modules/category/dto/category.dto';
 import { AutoMap } from '@automapper/classes';
+import { TimeBookStartDto } from 'src/modules/time-book-detail/dto/time-book-start.dto';
+import { TimeBookEndDto } from 'src/modules/time-book-detail/dto/time-book-end.dto';
 
 export class TourCreateDto {
   // @ApiProperty({ description: 'Tour ID', example: 1, required: false })
@@ -95,19 +96,19 @@ export class TourCreateDto {
   destination?: string;
 
   @ApiProperty({ description: 'Check-in time', example: '2023-12-25 10:00:00' })
-  @IsDate()
-  @Type(() => Date)
+  @IsString()
+  @IsOptional()
   @AutoMap()
-  checkIn: Date;
+  checkIn?: string;
 
   @ApiProperty({
     description: 'Check-out time',
     example: '2023-12-25 18:00:00',
   })
-  @IsDate()
-  @Type(() => Date)
+  @IsString()
+  @IsOptional()
   @AutoMap()
-  checkOut: Date;
+  checkOut?: string;
 
   @ApiProperty({
     description: 'Description of the destination',
@@ -146,38 +147,43 @@ export class TourCreateDto {
     example: '2023-12-25T10:00:00Z',
   })
   @IsNotEmpty({ message: 'Vui lòng nhập ngày bắt đầu hành trình!' })
-  @IsDate()
-  @Type(() => Date)
+  @IsString()
   @AutoMap()
-  startDay: Date;
+  startDay: string;
 
   @ApiProperty({
     description: 'End date of the tour',
     example: '2023-12-30T18:00:00Z',
   })
   @IsNotEmpty({ message: 'Vui lòng nhập ngày kết thúc hành trình!' })
-  @IsDate()
-  @Type(() => Date)
+  @IsString()
   @AutoMap()
-  endDay: Date;
+  endDay: string;
 
-  // @ApiProperty({ description: 'Start time slot for bookings', type: TimeBookStart })
-  // @IsNotEmpty({ message: 'Vui lòng nhập thời khung thời gian bắt đầu!' })
-  // @ValidateNested()
-  // @Type(() => TimeBookStart)
-  // timeBookStart: TimeBookStart;
+  @ApiProperty({
+    description: 'Start time slot for bookings',
+    type: TimeBookStartDto,
+  })
+  @IsNotEmpty({ message: 'Vui lòng nhập thời khung thời gian bắt đầu!' })
+  @ValidateNested()
+  @Type(() => TimeBookStartDto)
+  timeBookStart: TimeBookStartDto;
 
-  // @ApiProperty({ description: 'End time slot for bookings', type: TimeBookEnd })
-  // @IsNotEmpty({ message: 'Vui lòng nhập khung thời gian kết thúc!' })
-  // @ValidateNested()
-  // @Type(() => TimeBookEnd)
-  // timeBookEnd: TimeBookEnd;
+  @ApiProperty({
+    description: 'End time slot for bookings',
+    type: TimeBookEndDto,
+  })
+  @IsNotEmpty({ message: 'Vui lòng nhập khung thời gian kết thúc!' })
+  @ValidateNested()
+  @Type(() => TimeBookEndDto)
+  timeBookEnd: TimeBookEndDto;
 
   @ApiProperty({
     description: 'User ID of the creator',
     example: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
   })
   @IsUUID()
-  // @AutoMap()
-  userId: string;
+  @IsOptional()
+  @AutoMap()
+  userId?: string;
 }

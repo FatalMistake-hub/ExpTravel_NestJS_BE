@@ -24,10 +24,10 @@ import { TimeBookDetailModule } from './modules/time-book-detail/timeBookDetail.
 import { ToursModule } from './modules/tour/tour.module';
 import { UsersModule } from './modules/users/users.module';
 import { SeedModule } from './seed/seed.module';
-import { TimebãookdetailController } from './modules/time-book-detail/timeBookDetail.controller';
-import { TimebookdetailService } from './modules/time-book-detail/timeBookDetail.service';
 import { DayBookController } from './modules/dayBook/daybook.controller';
 import { DayBookService } from './modules/dayBook/dayBook.service';
+import { TimeBookDetailController } from './modules/time-book-detail/timeBookDetail.controller';
+import { TimeBookDetailService } from './modules/time-book-detail/timeBookDetail.service';
 
 @Module({
   imports: [
@@ -56,10 +56,6 @@ import { DayBookService } from './modules/dayBook/dayBook.service';
     TimeBookDetailModule,
   ],
   providers: [
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
     // {
     //   provide: APP_FILTER,
     //   useClass: AllExceptionsFilter,
@@ -68,10 +64,8 @@ import { DayBookService } from './modules/dayBook/dayBook.service';
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
-    DayBookService,
-    TimebookdetailService,
   ],
-  controllers: [DayBookController, TimebãookdetailController],
+  controllers: [DayBookController, TimeBookDetailController],
 })
 export class AppModule implements NestModule {
   constructor(/*private dataSource: DataSource*/) {
@@ -82,7 +76,6 @@ export class AppModule implements NestModule {
     // consumer
     //   .apply(LoggerMiddleware)
     //   .forRoutes({ path: 'songs', method: RequestMethod.POST }); //option no 2
-    console.log(typeOrmAsyncConfig);
     consumer.apply(LoggerMiddleware).forRoutes('*'); //option no 3
   }
 }

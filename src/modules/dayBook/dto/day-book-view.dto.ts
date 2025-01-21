@@ -18,14 +18,14 @@ export class DayBookViewDto {
     example: '2025-01-17',
   })
   @IsString()
-  date_name: string;
+  dateName: string;
 
   @ApiProperty({
     description: 'The tour ID associated with this day book',
     example: 123,
   })
   @IsString()
-  tourId: string;
+  tourId: number;
 
   @ApiProperty({
     description: 'The status of the day book',
@@ -47,5 +47,5 @@ export class DayBookViewDto {
     type: [TimeBookViewDto],
   })
   @IsOptional()
-  timeBookDetailList: TimeBookViewDto[];
+  timeBookDetailList?: TimeBookViewDto[];
 }

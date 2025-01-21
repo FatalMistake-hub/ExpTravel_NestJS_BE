@@ -1,6 +1,13 @@
 export class DaybookDto {}
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsOptional, IsString, IsUUID } from 'class-validator';
+import {
+  IsBoolean,
+  IsEnum,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
+import { DayBookStatusEnum } from 'src/utils/enum';
 
 export class DayBookDto {
   @ApiProperty({
@@ -15,7 +22,7 @@ export class DayBookDto {
     example: '2025-01-17',
   })
   @IsString()
-  date_name: string;
+  dateName: string;
 
   @ApiProperty({
     description: 'ID of the associated tour',
@@ -25,11 +32,12 @@ export class DayBookDto {
   tourId: number;
 
   @ApiProperty({
-    description: 'Status of the day book',
-    example: 'AVAILABLE',
+    description: 'The status of the day book',
+    enum: DayBookStatusEnum,
+    default: DayBookStatusEnum.AVAILABLE,
   })
-  @IsString()
-  status: string;
+  @IsEnum(DayBookStatusEnum)
+  status: DayBookStatusEnum = DayBookStatusEnum.AVAILABLE;
 
   @ApiProperty({
     description: 'Flag indicating whether the day book is deleted',

@@ -1,25 +1,30 @@
-import { ApiProperty } from '@nestjs/swagger';
+import {
+   ApiProperty } from '@nestjs/swagger';
 import { IsDate, IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
 import { Type } from 'class-transformer';
 import { DayBookStatusEnum } from 'src/utils/enum';
+import { AutoMap } from '@automapper/classes';
 
-export class DateBookCreateDto {
+export class DayBookCreateDto {
+  @AutoMap()
   @ApiProperty({
     description: 'Unique identifier for the day book',
     example: '123e4567-e89b-12d3-a456-426614174000',
   })
   @IsUUID()
   @IsOptional()
-  day_book_id?: string = null;
+  dayBookId?: string = null;
 
+  @AutoMap()
   @ApiProperty({
     description: 'The date associated with the day book',
     example: '2025-01-17',
   })
   @IsDate()
   @Type(() => Date)
-  date_name: Date;
+  dateName: Date;
 
+  @AutoMap()
   @ApiProperty({
     description: 'The status of the day book',
     enum: DayBookStatusEnum,
@@ -28,10 +33,11 @@ export class DateBookCreateDto {
   @IsEnum(DayBookStatusEnum)
   status: DayBookStatusEnum = DayBookStatusEnum.AVAILABLE;
 
+  @AutoMap()
   @ApiProperty({
     description: 'The tour ID associated with this day book',
     example: 123,
   })
   @IsString()
-  tour_id: string;
+  tourId: number;
 }

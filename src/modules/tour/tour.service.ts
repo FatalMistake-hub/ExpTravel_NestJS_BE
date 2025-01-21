@@ -1,34 +1,53 @@
-import { HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
+import { createMap, Mapper } from '@automapper/core';
+import { AutomapperProfile, InjectMapper } from '@automapper/nestjs';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { NativeUserRepository } from 'src/repository/user.repository';
+import { divideTimeRange, getDateRange } from 'src/utils';
+import { DayBookStatusEnum } from 'src/utils/enum';
 import { Repository } from 'typeorm';
+import { NativeTourRepository } from '../../repository/tour.repository';
+import { DayBookService } from '../dayBook/dayBook.service';
+import { DayBookCreateDto } from '../dayBook/dto/day-book-create.dto';
 import { ImageDto } from '../imageDetail/dto/image.dto';
 import { ImageDetail } from '../imageDetail/imageDetail.entity';
 import { ImageDetailsService } from '../imageDetail/ImageDetail.service';
+import { TimeBookDetailDto } from '../time-book-detail/dto/time-book-detail.dto';
+import { TimeBookEndDto } from '../time-book-detail/dto/time-book-end.dto';
+import { TimeBookStartDto } from '../time-book-detail/dto/time-book-start.dto';
+import { TimeBookDetailService } from '../time-book-detail/timeBookDetail.service';
 import { UserViewDto } from '../users/dto/user-view.dto';
-import { User } from '../users/user.entity';
+import { UsersService } from '../users/users.service';
 import { TourCreateDto } from './dto/create-tour.dto';
 import { TourResponseDto } from './dto/response-tour.dto';
 import { TourDetailDto } from './dto/tour-detail.dto';
 import { TourViewDto } from './dto/tour-view.dto';
-import { NativeTourRepository } from '../../repository/tour.repository';
-import { Tour } from './tour.entity';
-import { UsersService } from '../users/users.service';
-import { InjectMapper } from '@automapper/nestjs';
-import { Mapper } from '@automapper/core';
 import { TourUpdateDto } from './dto/update-tour.dto';
+import { Tour } from './tour.entity';
 
 @Injectable()
-export class ToursService {
+export class ToursService extends AutomapperProfile {
   constructor(
     @InjectRepository(ImageDetail)
     @InjectRepository(NativeTourRepository)
+    @InjectRepository(NativeUserRepository)
     private readonly imageDetailRepository: Repository<ImageDetail>,
     private readonly nativeTourRepository: NativeTourRepository,
+    private readonly nativeUserRepository: NativeUserRepository,
     private readonly imageDetailService: ImageDetailsService,
-    // private readonly dayBookService: DayBookService,
+    private readonly dayBookService: DayBookService,
     private readonly userService: UsersService,
-    @InjectMapper() private readonly mapper: Mapper, // // private tourRepository: Repository<Tour> // private readonly timeBookDetailService: TimeBookDetailService,
-  ) {}
+    private readonly timeBookDetailService: TimeBookDetailService,
+    @InjectMapper() mapper: Mapper, // // private tourRepository: Repository<Tour>
+  ) {
+    super(mapper);
+  }
+  override get profile() {
+    return (mapper: Mapper) => {
+      createMap(mapper, Tour, TourCreateDto);
+      createMap(mapper, TourCreateDto, Tour);
+    };
+  }
   async createTour(
     tourDto: TourCreateDto,
     userId: string,
@@ -37,7 +56,7 @@ export class ToursService {
 
     if (tourList.length === 0) {
       // Assuming there's a UserService with an updateRole method
-      // await this.userService.updateRole(userId, 'OWNER');
+      await this.nativeUserRepository.updateRole(userId, 'OWNER');
     }
 
     const tourId = Math.abs(
@@ -45,8 +64,8 @@ export class ToursService {
     );
 
     // START TIME AND END TIME
-    // const startTime = `${tourDto.timeBookStart.hour}:${tourDto.timeBookStart.minutes}`;
-    // const endTime = `${tourDto.timeBookEnd.hour}:${tourDto.timeBookEnd.minutes}`;
+    const startTime = `${tourDto.timeBookStart.hour}:${tourDto.timeBookStart.minutes}`;
+    const endTime = `${tourDto.timeBookEnd.hour}:${tourDto.timeBookEnd.minutes}`;
 
     const newTour = this.nativeTourRepository.create({
       tour_id: tourId,
@@ -63,14 +82,12 @@ export class ToursService {
       check_in: tourDto.checkIn,
       check_out: tourDto.checkOut,
       time_slot_length: tourDto.timeSlotLength,
-      // priceOnePerson: parseFloat(tourDto.priceOnePerson),
       price_one_person: tourDto.priceOnePerson,
-      // timeBookStart: startTime,
-      // timeBookEnd: endTime,
+      timeBookStart: startTime,
+      timeBookEnd: endTime,
       ...this.mapper.map(tourDto, TourCreateDto, Tour),
       destination_description: tourDto.destinationDescription,
     });
-    console.log(tourDto, newTour);
     await this.nativeTourRepository.save(newTour);
 
     // IMAGE PROCESS
@@ -82,45 +99,46 @@ export class ToursService {
     await this.imageDetailService.createImageDetailForTour(imageDtos);
 
     // DATE PROCESS
-    // const dateTimes = getDateRange(tourDto.startDay, tourDto.endDay);
-    // const dateBookCreateDtos: DateBookCreateDto[] = dateTimes.map((date) => ({
-    //   dateName: date,
-    //   tourId,
-    // }));
+    const dateTimes = getDateRange(tourDto.startDay, tourDto.endDay);
+    const dayBookCreateDtos: DayBookCreateDto[] = dateTimes.map((date) => ({
+      dateName: date,
+      tourId,
+      status: DayBookStatusEnum.AVAILABLE,
+    }));
+    for (const dateBook of dayBookCreateDtos) {
+      const dayBook = await this.dayBookService.createDayBooking(dateBook);
+      console.log("-------------dayBook------------",dayBook);
+      //   // TIME PROCESS
+      const localTimes = divideTimeRange(
+        tourDto.timeBookStart,
+        tourDto.timeBookEnd,
+        tourDto.timeSlotLength,
+      );
 
-    // for (const dateBook of dateBookCreateDtos) {
-    //   const dayBook = await this.dayBookService.createDayBooking(dateBook);
+      const timeBookDetailDtos: TimeBookDetailDto[] = [];
+      for (let i = 0; i < localTimes.length - 1; i++) {
+        timeBookDetailDtos.push({
+          dayBookId: dayBook.day_book_id,
+          startTime: localTimes[i].hour + ':' + localTimes[i].minutes,
+          endTime: localTimes[i + 1].hour + ':' + localTimes[i + 1].minutes,
+          isPayment: false,
+        });
+      }
 
-    //   // TIME PROCESS
-    //   const localTimes = divideFrameTime(
-    //     tourDto.timeBookStart,
-    //     tourDto.timeBookEnd,
-    //     tourDto.timeSlotLength,
-    //   );
-
-    //   const timeBookDetailDtos: TimeBookDetailDto[] = [];
-    //   for (let i = 0; i < localTimes.length - 1; i++) {
-    //     timeBookDetailDtos.push({
-    //       dayBookId: dayBook.id,
-    //       startTime: localTimes[i],
-    //       endTime: localTimes[i + 1],
-    //     });
-    //   }
-
-    //   for (const timeBookDetail of timeBookDetailDtos) {
-    //     await this.timeBookDetailService.createTimeBookDetail(timeBookDetail);
-    //   }
-    // }
+      for (const timeBookDetail of timeBookDetailDtos) {
+        console.log("-------------timeBookDetail------------",timeBookDetail);
+        await this.timeBookDetailService.createTimeBookDetail(timeBookDetail);
+      }
+    }
 
     return tourDto;
   }
   async getAll(pageNo: number, pageSize: number): Promise<TourResponseDto> {
     // Pagination
-    const tourList =
-      await this.nativeTourRepository.getAllTour(
-        (pageNo - 1) * pageSize,
-        pageSize,
-      );
+    const tourList = await this.nativeTourRepository.getAllTour(
+      (pageNo - 1) * pageSize,
+      pageSize,
+    );
     const totalElements = tourList.length;
     console.log(tourList, totalElements);
     // Prepare the response
@@ -232,13 +250,13 @@ export class ToursService {
       isEnabled: user.is_enabled,
     };
 
-    // const timeBookStart: TimeBook = tour.timeBookStart
-    //   ? { hour: tour.timeBookStart.hour, minutes: tour.timeBookStart.minute }
-    //   : null;
+    const timeBookStart: TimeBookStartDto = tour.timeBookStart
+      ? { hour: tour.timeBookStart.hour, minutes: tour.timeBookStart.minute }
+      : null;
 
-    // const timeBookEnd: TimeBook = tour.timeBookEnd
-    //   ? { hour: tour.timeBookEnd.hour, minutes: tour.timeBookEnd.minute }
-    //   : null;
+    const timeBookEnd: TimeBookEndDto = tour.timeBookEnd
+      ? { hour: tour.timeBookEnd.hour, minutes: tour.timeBookEnd.minute }
+      : null;
 
     const tourDetailDto: TourDetailDto = {
       tourId: tour.tour_id,
@@ -262,8 +280,8 @@ export class ToursService {
       timeSlotLength: tour.time_slot_length,
       isDeleted: tour.is_deleted,
       user: userViewDto,
-      // timeBookStart,
-      // timeBookEnd,
+      timeBookStart,
+      timeBookEnd,
     };
 
     return tourDetailDto;

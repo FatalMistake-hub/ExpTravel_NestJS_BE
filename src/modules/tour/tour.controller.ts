@@ -53,7 +53,7 @@ export class TourController {
   }
 
   @Get('all')
-  @Roles(RoleEnum.USER)
+  // @Roles(RoleEnum.USER)
   @ApiOperation({ summary: 'Get all tours' })
   @ApiResponse({ status: 200, description: 'List of all tours' })
   @ApiQuery({

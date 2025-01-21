@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsOptional, IsString, IsUUID } from 'class-validator';
+import { TimeBookDetail } from '../timeBookDetail.entity';
 
 export class TimeBookViewDto {
   @ApiProperty({
@@ -14,14 +15,14 @@ export class TimeBookViewDto {
     example: '10:00:00',
   })
   @IsString()
-  start_time: string;
+  startTime: string;
 
   @ApiProperty({
     description: 'End time for the booking',
     example: '12:00:00',
   })
   @IsString()
-  end_time: string;
+  endTime: string;
 
   @ApiProperty({
     description: 'Flag indicating whether the time book detail is deleted',
@@ -29,4 +30,10 @@ export class TimeBookViewDto {
   })
   @IsBoolean()
   isDeleted: boolean;
+  constructor(partial: Partial<TimeBookDetail>) {
+    this.timeId = partial.time_id;
+    this.startTime = partial.start_time;
+    this.endTime = partial.end_time;
+    this.isDeleted = partial.is_deleted;
+  }
 }
