@@ -42,10 +42,7 @@ export function getDateRange(startDate, endDate) {
   const dateArray = [];
   const format = 'YYYY-MM-DD HH:mm:ss';
   let currentDate = moment(startDate, format);
-  console.log(currentDate)
-  console.log(moment(endDate, format))
   while (currentDate.valueOf() <= moment(endDate, format).valueOf()) {
-    console.log(currentDate.valueOf() <= moment(endDate, format).valueOf())
     dateArray.push(currentDate.format("YYYY-MM-DD"));
     currentDate.add(1, "days");
   }

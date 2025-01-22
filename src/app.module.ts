@@ -1,12 +1,12 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // import { DataSource } from 'typeorm';
-import { classes } from '@automapper/classes';
+
 import {
   CamelCaseNamingConvention,
   SnakeCaseNamingConvention
 } from '@automapper/core';
-import { AutomapperModule } from '@automapper/nestjs';
+
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
@@ -28,6 +28,8 @@ import { DayBookController } from './modules/dayBook/daybook.controller';
 import { DayBookService } from './modules/dayBook/dayBook.service';
 import { TimeBookDetailController } from './modules/time-book-detail/timeBookDetail.controller';
 import { TimeBookDetailService } from './modules/time-book-detail/timeBookDetail.service';
+import { AutomapperModule } from '@automapper/nestjs';
+import { classes } from '@automapper/classes';
 
 @Module({
   imports: [

@@ -24,6 +24,8 @@ import { TourDetailDto } from './dto/tour-detail.dto';
 import { TourViewDto } from './dto/tour-view.dto';
 import { TourUpdateDto } from './dto/update-tour.dto';
 import { Tour } from './tour.entity';
+import { Queue } from 'bullmq';
+import { InjectQueue } from '@nestjs/bullmq';
 
 @Injectable()
 export class ToursService extends AutomapperProfile {
@@ -39,6 +41,7 @@ export class ToursService extends AutomapperProfile {
     private readonly userService: UsersService,
     private readonly timeBookDetailService: TimeBookDetailService,
     @InjectMapper() mapper: Mapper, // // private tourRepository: Repository<Tour>
+    @InjectQueue('time-book-queue') private timeBookQueue: Queue
   ) {
     super(mapper);
   }
@@ -96,40 +99,41 @@ export class ToursService extends AutomapperProfile {
       tourId,
       link: item.link,
     }));
+
+    await this.timeBookQueue.add('create-time-book-detail', { tourDto, tourId });
+
     await this.imageDetailService.createImageDetailForTour(imageDtos);
 
     // DATE PROCESS
-    const dateTimes = getDateRange(tourDto.startDay, tourDto.endDay);
-    const dayBookCreateDtos: DayBookCreateDto[] = dateTimes.map((date) => ({
-      dateName: date,
-      tourId,
-      status: DayBookStatusEnum.AVAILABLE,
-    }));
-    for (const dateBook of dayBookCreateDtos) {
-      const dayBook = await this.dayBookService.createDayBooking(dateBook);
-      console.log("-------------dayBook------------",dayBook);
-      //   // TIME PROCESS
-      const localTimes = divideTimeRange(
-        tourDto.timeBookStart,
-        tourDto.timeBookEnd,
-        tourDto.timeSlotLength,
-      );
+    // const dateTimes = getDateRange(tourDto.startDay, tourDto.endDay);
+    // const dayBookCreateDtos: DayBookCreateDto[] = dateTimes.map((date) => ({
+    //   dateName: date,
+    //   tourId,
+    //   status: DayBookStatusEnum.AVAILABLE,
+    // }));
+    // for (const dateBook of dayBookCreateDtos) {
+    //   const dayBook = await this.dayBookService.createDayBooking(dateBook);
+    //   //   // TIME PROCESS
+    //   const localTimes = divideTimeRange(
+    //     tourDto.timeBookStart,
+    //     tourDto.timeBookEnd,
+    //     tourDto.timeSlotLength,
+    //   );
 
-      const timeBookDetailDtos: TimeBookDetailDto[] = [];
-      for (let i = 0; i < localTimes.length - 1; i++) {
-        timeBookDetailDtos.push({
-          dayBookId: dayBook.day_book_id,
-          startTime: localTimes[i].hour + ':' + localTimes[i].minutes,
-          endTime: localTimes[i + 1].hour + ':' + localTimes[i + 1].minutes,
-          isPayment: false,
-        });
-      }
+    //   const timeBookDetailDtos: TimeBookDetailDto[] = [];
+    //   for (let i = 0; i < localTimes.length - 1; i++) {
+    //     timeBookDetailDtos.push({
+    //       dayBookId: dayBook.day_book_id,
+    //       startTime: localTimes[i].hour + ':' + localTimes[i].minutes,
+    //       endTime: localTimes[i + 1].hour + ':' + localTimes[i + 1].minutes,
+    //       isPayment: false,
+    //     });
+    //   }
 
-      for (const timeBookDetail of timeBookDetailDtos) {
-        console.log("-------------timeBookDetail------------",timeBookDetail);
-        await this.timeBookDetailService.createTimeBookDetail(timeBookDetail);
-      }
-    }
+    //   for (const timeBookDetail of timeBookDetailDtos) {
+    //     await this.timeBookDetailService.createTimeBookDetail(timeBookDetail);
+    //   }
+    // }
 
     return tourDto;
   }
