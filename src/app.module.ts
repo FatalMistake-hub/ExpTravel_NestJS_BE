@@ -4,11 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import {
   CamelCaseNamingConvention,
-  SnakeCaseNamingConvention
+  SnakeCaseNamingConvention,
 } from '@automapper/core';
 
 import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 import { typeOrmAsyncConfig } from 'db/data-source';
 import { validate } from 'env.validation';
@@ -30,6 +30,9 @@ import { TimeBookDetailController } from './modules/time-book-detail/timeBookDet
 import { TimeBookDetailService } from './modules/time-book-detail/timeBookDetail.service';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
+import { BullModule } from '@nestjs/bullmq';
+import { AppListener } from './app.listener';
+import { HttpExceptionFilter } from './common/filters/GlobalFilterException';
 
 @Module({
   imports: [
@@ -47,6 +50,12 @@ import { classes } from '@automapper/classes';
         destination: new SnakeCaseNamingConvention(),
       },
     }),
+    BullModule.forRoot({
+      connection: {
+        host: 'localhost',
+        port: 6379,
+      },
+    }),
     TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     AuthModule,
     UsersModule,
@@ -58,14 +67,15 @@ import { classes } from '@automapper/classes';
     TimeBookDetailModule,
   ],
   providers: [
-    // {
-    //   provide: APP_FILTER,
-    //   useClass: AllExceptionsFilter,
-    // },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
     },
+    AppListener
   ],
   controllers: [DayBookController, TimeBookDetailController],
 })

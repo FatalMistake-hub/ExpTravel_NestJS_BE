@@ -13,6 +13,7 @@ import { DayBookModule } from '../dayBook/dayBook.module';
 import { TimeBookDetailModule } from '../time-book-detail/timeBookDetail.module';
 import { NativeUserRepository } from 'src/repository/user.repository';
 import { BullModule } from '@nestjs/bullmq';
+import { TimeBookProcessor } from './queue/time-book-queue';
 
 @Module({
   imports: [
@@ -23,17 +24,16 @@ import { BullModule } from '@nestjs/bullmq';
     TimeBookDetailModule,
     // AuthModule,
 
-    BullModule.forRoot({
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
-    }),
     BullModule.registerQueue({
       name: 'time-book-queue',
     }),
   ],
-  providers: [ToursService, NativeTourRepository, NativeUserRepository],
+  providers: [
+    ToursService,
+    NativeTourRepository,
+    NativeUserRepository,
+    TimeBookProcessor,
+  ],
   exports: [ToursService, TypeOrmModule.forFeature([Tour])],
   controllers: [TourController],
 })

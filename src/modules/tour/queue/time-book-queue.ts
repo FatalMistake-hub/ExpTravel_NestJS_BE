@@ -10,16 +10,17 @@ import { DayBookStatusEnum } from 'src/utils/enum';
 
 @Processor('time-book-queue')
 export class TimeBookProcessor extends WorkerHost {
+  private readonly logger = new Logger();
   constructor(
     private readonly dayBookService: DayBookService,
     private readonly timeBookDetailService: TimeBookDetailService,
-    private readonly logger = new Logger(TimeBookProcessor.name),
   ) {
     super();
   }
 
   async process(job: Job<any>): Promise<void> {
     const { tourDto, tourId } = job.data;
+    this.logger.log(`Processing job: ${job.name} for tourId: ${tourId}`);
     switch (job.name) {
       case 'create-time-book-detail': {
         const dateTimes = getDateRange(tourDto.startDay, tourDto.endDay);
@@ -51,9 +52,16 @@ export class TimeBookProcessor extends WorkerHost {
             await this.timeBookDetailService.createTimeBookDetail(
               timeBookDetail,
             );
+            this.logger.log(
+              `Created TimeBookDetail: ${timeBookDetail.startTime} - ${timeBookDetail.endTime}`,
+            );
           }
         }
-        break;
+        return Promise.resolve();
+      }
+      default: {
+        this.logger.error(`Job name: ${job.name} not found`);
+        return Promise.resolve();
       }
     }
   }

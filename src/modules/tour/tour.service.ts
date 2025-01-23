@@ -100,41 +100,14 @@ export class ToursService extends AutomapperProfile {
       link: item.link,
     }));
 
-    await this.timeBookQueue.add('create-time-book-detail', { tourDto, tourId });
-
+    
     await this.imageDetailService.createImageDetailForTour(imageDtos);
-
-    // DATE PROCESS
-    // const dateTimes = getDateRange(tourDto.startDay, tourDto.endDay);
-    // const dayBookCreateDtos: DayBookCreateDto[] = dateTimes.map((date) => ({
-    //   dateName: date,
-    //   tourId,
-    //   status: DayBookStatusEnum.AVAILABLE,
-    // }));
-    // for (const dateBook of dayBookCreateDtos) {
-    //   const dayBook = await this.dayBookService.createDayBooking(dateBook);
-    //   //   // TIME PROCESS
-    //   const localTimes = divideTimeRange(
-    //     tourDto.timeBookStart,
-    //     tourDto.timeBookEnd,
-    //     tourDto.timeSlotLength,
-    //   );
-
-    //   const timeBookDetailDtos: TimeBookDetailDto[] = [];
-    //   for (let i = 0; i < localTimes.length - 1; i++) {
-    //     timeBookDetailDtos.push({
-    //       dayBookId: dayBook.day_book_id,
-    //       startTime: localTimes[i].hour + ':' + localTimes[i].minutes,
-    //       endTime: localTimes[i + 1].hour + ':' + localTimes[i + 1].minutes,
-    //       isPayment: false,
-    //     });
-    //   }
-
-    //   for (const timeBookDetail of timeBookDetailDtos) {
-    //     await this.timeBookDetailService.createTimeBookDetail(timeBookDetail);
-    //   }
-    // }
-
+    
+    // TIME BOOK PROCESS - QUEUE
+    await this.timeBookQueue.add('create-time-book-detail', { tourDto, tourId }, {
+      delay: 5000,
+    });
+    
     return tourDto;
   }
   async getAll(pageNo: number, pageSize: number): Promise<TourResponseDto> {
