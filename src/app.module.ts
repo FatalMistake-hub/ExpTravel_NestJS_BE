@@ -7,7 +7,7 @@ import {
   SnakeCaseNamingConvention,
 } from '@automapper/core';
 
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { ScheduleModule } from '@nestjs/schedule';
 import { typeOrmAsyncConfig } from 'db/data-source';
@@ -24,7 +24,6 @@ import { TimeBookDetailModule } from './modules/time-book-detail/timeBookDetail.
 import { ToursModule } from './modules/tour/tour.module';
 import { UsersModule } from './modules/users/users.module';
 import { SeedModule } from './seed/seed.module';
-import { DayBookController } from './modules/dayBook/daybook.controller';
 import { DayBookService } from './modules/dayBook/dayBook.service';
 import { TimeBookDetailController } from './modules/time-book-detail/timeBookDetail.controller';
 import { TimeBookDetailService } from './modules/time-book-detail/timeBookDetail.service';
@@ -33,6 +32,7 @@ import { classes } from '@automapper/classes';
 import { BullModule } from '@nestjs/bullmq';
 import { AppListener } from './app.listener';
 import { HttpExceptionFilter } from './common/filters/GlobalFilterException';
+import { DayBookController } from './modules/dayBook/dayBook.controller';
 
 @Module({
   imports: [
@@ -50,11 +50,15 @@ import { HttpExceptionFilter } from './common/filters/GlobalFilterException';
         destination: new SnakeCaseNamingConvention(),
       },
     }),
-    BullModule.forRoot({
-      connection: {
-        host: 'localhost',
-        port: 6379,
-      },
+    BullModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          host: configService.get<string>('redisHost'),
+          port: configService.get<number>('redisPort'),
+        },
+      }),
+      inject: [ConfigService],
     }),
     TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     AuthModule,

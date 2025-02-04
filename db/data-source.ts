@@ -28,8 +28,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
       host: configService.get<string>('dbHost'),
       port: configService.get<number>('dbPort'),
       username: configService.get<string>('username'),
-      // database: configService.get<string>('dbName'),
-      database: 'exptravel',
+      database: configService.get<string>('dbName'),
       password: configService.get<string>('password'),
       entities: [
         User,
@@ -52,11 +51,10 @@ export const dataSourceOptions: DataSourceOptions = {
   host: process.env.DB_HOST,
   port: parseInt(process.env.DB_PORT),
   username: process.env.USERNAME,
-  // database: process.env.DB_NAME,
-  database: 'exptravel',
+  database: process.env.DB_NAME,
   password: process.env.PASSWORD,
   entities: ['dist/**/*.entity.js'], //1
-  synchronize: false, // 2
+  synchronize: true, // 2
   migrations: ['dist/db/migrations/*.js'], // 3
   namingStrategy: new SnakeNamingStrategy(),
 };

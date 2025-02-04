@@ -1,5 +1,5 @@
 {
-  "name": "n-fundamentals-pro",
+  "name": "Exptravel-api",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -61,8 +61,8 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@nestjs/cli": "^11.0.0",
     "@automapper/types": "^6.3.1",
-    "@nestjs/cli": "^11.0.2",
     "@nestjs/schematics": "^11.0.0",
     "@nestjs/testing": "^11.0.4",
     "@types/bcryptjs": "^2.4.2",
