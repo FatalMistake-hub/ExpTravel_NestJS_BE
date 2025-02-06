@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as moment from 'moment';
-import { TimeBookDetail } from 'src/modules/time-book-detail/timeBookDetail.entity';
+import { TimeBookDetail } from 'src/modules/timeBookDetail/timeBookDetail.entity';
 import { DataSource, Repository } from 'typeorm';
 
 @Injectable()

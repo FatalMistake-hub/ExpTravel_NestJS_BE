@@ -7,7 +7,7 @@ import { RefreshToken } from 'src/modules/auth/entity/refresh-token.entity';
 import { Category } from 'src/modules/category/category.entity';
 import { DayBook } from 'src/modules/dayBook/dayBook.entity';
 import { ImageDetail } from 'src/modules/imageDetail/imageDetail.entity';
-import { TimeBookDetail } from 'src/modules/time-book-detail/timeBookDetail.entity';
+import { TimeBookDetail } from 'src/modules/timeBookDetail/timeBookDetail.entity';
 import { Tour } from 'src/modules/tour/tour.entity';
 
 import { User } from 'src/modules/users/user.entity';

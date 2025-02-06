@@ -3,8 +3,8 @@ import { Logger } from '@nestjs/common';
 import { Job } from 'bullmq';
 import { DayBookService } from 'src/modules/dayBook/dayBook.service';
 import { DayBookCreateDto } from 'src/modules/dayBook/dto/day-book-create.dto';
-import { TimeBookDetailDto } from 'src/modules/time-book-detail/dto/time-book-detail.dto';
-import { TimeBookDetailService } from 'src/modules/time-book-detail/timeBookDetail.service';
+import { TimeBookDetailDto } from 'src/modules/timeBookDetail/dto/time-book-detail.dto';
+import { TimeBookDetailService } from 'src/modules/timeBookDetail/timeBookDetail.service';
 import { divideTimeRange, getDateRange } from 'src/utils';
 import { DayBookStatusEnum } from 'src/utils/enum';
 

@@ -6,7 +6,7 @@ import { Tour } from 'src/modules/tour/tour.entity';
 import { ImageDetail } from 'src/modules/imageDetail/imageDetail.entity';
 import { faker } from '@faker-js/faker/locale/vi';
 import { DayBook } from 'src/modules/dayBook/dayBook.entity';
-import { TimeBookDetail } from 'src/modules/time-book-detail/timeBookDetail.entity';
+import { TimeBookDetail } from 'src/modules/timeBookDetail/timeBookDetail.entity';
 import { DayBookStatusEnum } from 'src/utils/enum';
 
 export const seedData = async (manager: EntityManager): Promise<void> => {

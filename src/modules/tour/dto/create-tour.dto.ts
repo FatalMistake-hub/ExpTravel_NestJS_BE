@@ -12,8 +12,8 @@ import { Type } from 'class-transformer';
 import { ImageDto } from 'src/modules/imageDetail/dto/image.dto';
 import { CategoryDto } from 'src/modules/category/dto/category.dto';
 import { AutoMap } from '@automapper/classes';
-import { TimeBookStartDto } from 'src/modules/time-book-detail/dto/time-book-start.dto';
-import { TimeBookEndDto } from 'src/modules/time-book-detail/dto/time-book-end.dto';
+import { TimeBookStartDto } from 'src/modules/timeBookDetail/dto/time-book-start.dto';
+import { TimeBookEndDto } from 'src/modules/timeBookDetail/dto/time-book-end.dto';
 
 export class TourCreateDto {
   // @ApiProperty({ description: 'Tour ID', example: 1, required: false })

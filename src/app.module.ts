@@ -20,19 +20,20 @@ import { RolesGuard } from './modules/auth/guard/role.guard';
 import { CategoriesModule } from './modules/category/category.module';
 import { DayBookModule } from './modules/dayBook/dayBook.module';
 import { ImageDetailsModule } from './modules/imageDetail/ImageDetail.module';
-import { TimeBookDetailModule } from './modules/time-book-detail/timeBookDetail.module';
+import { TimeBookDetailModule } from './modules/timeBookDetail/timeBookDetail.module';
 import { ToursModule } from './modules/tour/tour.module';
 import { UsersModule } from './modules/users/users.module';
 import { SeedModule } from './seed/seed.module';
 import { DayBookService } from './modules/dayBook/dayBook.service';
-import { TimeBookDetailController } from './modules/time-book-detail/timeBookDetail.controller';
-import { TimeBookDetailService } from './modules/time-book-detail/timeBookDetail.service';
+import { TimeBookDetailController } from './modules/timeBookDetail/timeBookDetail.controller';
+import { TimeBookDetailService } from './modules/timeBookDetail/timeBookDetail.service';
 import { AutomapperModule } from '@automapper/nestjs';
 import { classes } from '@automapper/classes';
 import { BullModule } from '@nestjs/bullmq';
 import { AppListener } from './app.listener';
 import { HttpExceptionFilter } from './common/filters/GlobalFilterException';
 import { DayBookController } from './modules/dayBook/dayBook.controller';
+import { HealthModule } from './modules/health/health.module';
 
 @Module({
   imports: [
@@ -69,6 +70,7 @@ import { DayBookController } from './modules/dayBook/dayBook.controller';
     SeedModule,
     DayBookModule,
     TimeBookDetailModule,
+    HealthModule
   ],
   providers: [
     {

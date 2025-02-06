@@ -6,7 +6,7 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
-import { TimeBookDetail } from '../time-book-detail/timeBookDetail.entity';
+import { TimeBookDetail } from '../timeBookDetail/timeBookDetail.entity';
 import { Tour } from '../tour/tour.entity';
 import { AutoMap } from '@automapper/classes';
 import { DayBookStatusEnum } from 'src/utils/enum';

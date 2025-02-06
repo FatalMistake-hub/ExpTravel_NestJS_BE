@@ -10,7 +10,7 @@ import { Tour } from './tour.entity';
 import { ToursService } from './tour.service';
 import { NativeTourRepository } from 'src/repository/tour.repository';
 import { DayBookModule } from '../dayBook/dayBook.module';
-import { TimeBookDetailModule } from '../time-book-detail/timeBookDetail.module';
+import { TimeBookDetailModule } from '../timeBookDetail/timeBookDetail.module';
 import { NativeUserRepository } from 'src/repository/user.repository';
 import { BullModule } from '@nestjs/bullmq';
 import { TimeBookProcessor } from './queue/time-book-queue';

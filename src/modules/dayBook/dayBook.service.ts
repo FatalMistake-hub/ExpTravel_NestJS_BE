@@ -5,7 +5,7 @@ import { NativeDayBookRepository } from 'src/repository/day-book.repository';
 import { DayBookPagingResponse } from 'src/response/day-book-paging-response';
 import { DayPagingResponse } from 'src/response/day-paging-response';
 import { DeleteResponse } from 'src/response/delete-response';
-import { TimeBookDetailService } from '../time-book-detail/timeBookDetail.service';
+import { TimeBookDetailService } from '../timeBookDetail/timeBookDetail.service';
 import { DayBook } from './dayBook.entity';
 import { DayBookCreateDto } from './dto/day-book-create.dto';
 import { DayBookUpdate } from './dto/day-book-update.dto';

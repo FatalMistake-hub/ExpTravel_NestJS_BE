@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { DayBookStatusEnum } from 'src/utils/enum';
-import { TimeBookDetail } from 'src/modules/time-book-detail/timeBookDetail.entity';
+import { TimeBookDetail } from 'src/modules/timeBookDetail/timeBookDetail.entity';
 import { AutoMap } from '@automapper/classes';
 
 export class DayBookUpdate {

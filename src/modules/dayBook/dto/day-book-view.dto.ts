@@ -1,7 +1,7 @@
 export class DaybookviewDto {}
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
-import { TimeBookViewDto } from 'src/modules/time-book-detail/dto/time-book-view.dto';
+import { TimeBookViewDto } from 'src/modules/timeBookDetail/dto/time-book-view.dto';
 import { DayBookStatusEnum } from 'src/utils/enum';
 
 
