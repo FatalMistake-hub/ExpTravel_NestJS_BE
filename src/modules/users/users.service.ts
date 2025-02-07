@@ -28,9 +28,6 @@ export class UsersService {
     user.user_password = await hash(userRegistrationDto.userPassword, salt); // 3
     return this.nativeUserRepository.save(user);
   }
-  async findOne(email: string): Promise<User> {
-    return this.nativeUserRepository.findOne({ where: { user_email: email } });
-  }
   async findOneById(id: string): Promise<User> {
     return this.nativeUserRepository.findOne({ where: { user_id: id } });
   }

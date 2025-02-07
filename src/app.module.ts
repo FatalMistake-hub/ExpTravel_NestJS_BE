@@ -34,6 +34,10 @@ import { AppListener } from './app.listener';
 import { HttpExceptionFilter } from './common/filters/GlobalFilterException';
 import { DayBookController } from './modules/dayBook/dayBook.controller';
 import { HealthModule } from './modules/health/health.module';
+import { WalletModule } from './modules/wallet/wallet.module';
+import { GuestModule } from './modules/guest/guest.module';
+import { PaymentModule } from './modules/payment/payment.module';
+import { OrderModule } from './modules/order/order.module';
 
 @Module({
   imports: [
@@ -51,15 +55,21 @@ import { HealthModule } from './modules/health/health.module';
         destination: new SnakeCaseNamingConvention(),
       },
     }),
-    BullModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        connection: {
-          host: configService.get<string>('redisHost'),
-          port: configService.get<number>('redisPort'),
-        },
-      }),
-      inject: [ConfigService],
+    // BullModule.forRootAsync({
+    //   imports: [ConfigModule],
+    //   useFactory: (configService: ConfigService) => ({
+    //     connection: {
+    //       host: configService.get<string>('redisHost'),
+    //       port: configService.get<number>('redisPort'),
+    //     },
+    //   }),
+    //   inject: [ConfigService],
+    // }),
+    BullModule.forRoot({
+      connection: {
+        host: 'localhost',
+        port: 6379,
+      },
     }),
     TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     AuthModule,
@@ -70,6 +80,10 @@ import { HealthModule } from './modules/health/health.module';
     SeedModule,
     DayBookModule,
     TimeBookDetailModule,
+    WalletModule,
+    GuestModule,
+    PaymentModule,
+    OrderModule,
     HealthModule
   ],
   providers: [

@@ -6,11 +6,15 @@ import {
 import { RefreshToken } from 'src/modules/auth/entity/refresh-token.entity';
 import { Category } from 'src/modules/category/category.entity';
 import { DayBook } from 'src/modules/dayBook/dayBook.entity';
+import { Guest } from 'src/modules/guest/guest.entity';
 import { ImageDetail } from 'src/modules/imageDetail/imageDetail.entity';
+import { Order } from 'src/modules/order/order.entity';
+import { Payment } from 'src/modules/payment/payment.entity';
 import { TimeBookDetail } from 'src/modules/timeBookDetail/timeBookDetail.entity';
 import { Tour } from 'src/modules/tour/tour.entity';
 
 import { User } from 'src/modules/users/user.entity';
+import { Wallet } from 'src/modules/wallet/wallet.entity';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
@@ -38,6 +42,10 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
         ImageDetail,
         DayBook,
         TimeBookDetail,
+        Guest,
+        Wallet,
+        Payment,
+        Order
       ],
       synchronize: true,
       migrations: ['dist/db/migrations/*.js'],

@@ -35,7 +35,7 @@ export class AuthService {
   async login(
     jwtResquest: JwtResquest,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const user = await this.userService.findOne(jwtResquest.email); // 1.
+    const user = await this.userService.findOneByEmail(jwtResquest.email); // 1.
     if (!user) {
       throw new UnauthorizedException('User not found'); // 4.
     }

@@ -13,7 +13,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -24,8 +23,6 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Request } from 'express';
-import { Roles } from 'src/common/decorator/role.decorator';
-import { RoleEnum } from 'src/utils/enum';
 import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { TourCreateDto } from './dto/create-tour.dto';
 import { TourResponseDto } from './dto/response-tour.dto';

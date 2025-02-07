@@ -25,4 +25,11 @@ export class NativeUserRepository extends Repository<User> {
     `;
     return await this.dataSource.query(query, [userId, role]);
   }
+  async getUserByUserEmail(email: string) {
+    const query = `
+      SELECT * FROM users
+      WHERE user_email = $1
+    `;
+    return await this.dataSource.query(query, [email]);
+  }
 }

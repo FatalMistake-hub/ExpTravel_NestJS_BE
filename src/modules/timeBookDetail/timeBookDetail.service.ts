@@ -94,6 +94,27 @@ export class TimeBookDetailService {
     }
     return new TimeBookViewDto(timeBookDetail);
   }
+  // Get TimeBook by ID
+  async getTimeBookDetailById(id: string): Promise<TimeBookDetail> {
+    const timeBookDetail = await this.nativeTimeBookRepository.findOneOrFail({
+      where: { time_id: id },
+    });
+    console.log(timeBookDetail);
+    if (!timeBookDetail) {
+      throw new NotFoundException('TimeBook not found');
+    }
+    return timeBookDetail
+  }
+  async updateStatusPayment(id: string, status: boolean): Promise<void> {
+    const timeBookDetail = await this.nativeTimeBookRepository.findOneOrFail({
+      where: { time_id: id },
+    });
+    if (!timeBookDetail) {
+      throw new NotFoundException('TimeBook not found');
+    }
+    timeBookDetail.is_payment = status;
+    await this.nativeTimeBookRepository.save(timeBookDetail);
+  }
 
   // Create a list of TimeBook details
   async createListTimeBookDetail(
