@@ -6,16 +6,27 @@ import {
   Post,
   Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { Request } from 'express';
-import { ApiOperation, ApiParam, ApiQuery, ApiTags, ApiBody } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiTags,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { UsersService } from '../users/users.service';
 import { GuestDto } from '../guest/dto/guest.dto';
 import { ResponseDataAPI } from 'src/response/data-api-response';
 import { PaymentService } from './payment.service';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
 @ApiTags('Payment')
 @Controller('payment')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class PaymentController {
   constructor(
     private readonly paymentService: PaymentService,
@@ -24,9 +35,23 @@ export class PaymentController {
 
   @ApiOperation({ summary: 'Process a payment for a tour booking' })
   @ApiParam({ name: 'tour_id', type: Number, description: 'ID of the tour' })
-  @ApiParam({ name: 'time_book_id', type: String, description: 'ID of the booking time' })
-  @ApiParam({ name: 'price_total', type: String, description: 'Total price of the booking' })
-  @ApiQuery({ name: 'language', type: String, required: false, description: 'Language preference', example: 'vn' })
+  @ApiParam({
+    name: 'time_book_id',
+    type: String,
+    description: 'ID of the booking time',
+  })
+  @ApiParam({
+    name: 'price_total',
+    type: String,
+    description: 'Total price of the booking',
+  })
+  @ApiQuery({
+    name: 'language',
+    type: String,
+    required: false,
+    description: 'Language preference',
+    example: 'vn',
+  })
   @ApiBody({ type: [GuestDto], description: 'List of guest details' })
   @Post(':tour_id/:time_book_id/:price_total')
   async payment(
@@ -51,8 +76,19 @@ export class PaymentController {
   }
 
   @ApiOperation({ summary: 'Handle payment result callback' })
-  @ApiQuery({ name: 'vnp_ResponseCode', type: String, required: false, description: 'Response code from payment gateway', example: '00' })
-  @ApiQuery({ name: 'vnp_TxnRef', type: String, required: false, description: 'Transaction reference from payment gateway' })
+  @ApiQuery({
+    name: 'vnp_ResponseCode',
+    type: String,
+    required: false,
+    description: 'Response code from payment gateway',
+    example: '00',
+  })
+  @ApiQuery({
+    name: 'vnp_TxnRef',
+    type: String,
+    required: false,
+    description: 'Transaction reference from payment gateway',
+  })
   @Get()
   async paymentResult(
     @Query('vnp_ResponseCode') responseCode: string = '00',

@@ -7,15 +7,15 @@ import { BaseEntity } from 'src/base.entity';
 @Entity({ name: 'orders' })
 export class Order extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
-  orderId: string;
+  order_id: string;
 
   @AutoMap()
   @Column({ type: 'timestamp', nullable: true })
-  orderDate: Date;
+  order_date: Date; 
 
   @AutoMap()
   @Column({ type: 'varchar', nullable: false })
-  statusOrder: string;
+  status_order: string; 
 
   @AutoMap()
   @Column({ type: 'decimal', precision: 10, scale: 2 })
@@ -23,24 +23,24 @@ export class Order extends BaseEntity {
 
   @AutoMap()
   @Column({ type: 'varchar', nullable: true })
-  orderIdBlockChain: string;
+  order_id_blockchain: string; 
 
   @AutoMap()
   @Column({ type: 'varchar', nullable: true })
-  publicKey: string;
+  public_key: string; 
 
   @AutoMap()
   @Column({ type: 'uuid', nullable: false })
-  timeId: string;
+  time_id: string; 
 
   @AutoMap()
   @Column({ type: 'uuid', nullable: false })
-  userId: string;
+  user_id: string; 
 
   @AutoMap(() => TimeBookDetail)
   @ManyToOne(() => TimeBookDetail, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'time_id' })
-  timeBookDetail: TimeBookDetail;
+  time_book_detail: TimeBookDetail;
   
   @AutoMap(() => User)
   @ManyToOne(() => User, { onDelete: 'CASCADE', eager: true })

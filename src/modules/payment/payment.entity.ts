@@ -14,15 +14,15 @@ import { User } from '../users/user.entity';
 @Entity({ name: 'payments' })
 export class Payment extends BaseEntity {
   @PrimaryGeneratedColumn('uuid', { name: 'payment_id' })
-  paymentId: string;
+  payment_id: string;
 
   @AutoMap()
   @Column({ name: 'vnp_order_info', nullable: true })
-  vnpOrderInfo: string;
+  vnp_order_info: string;
 
   @AutoMap()
   @Column({ name: 'order_type', nullable: true })
-  orderType: string;
+  order_type: string;
 
   @AutoMap()
   @Column({ type: 'decimal', nullable: false })
@@ -34,31 +34,31 @@ export class Payment extends BaseEntity {
 
   @AutoMap()
   @Column({ name: 'ip_address', nullable: false })
-  ipAddress: string;
+  ip_address: string;
 
   @AutoMap()
   @Column({ name: 'payment_url', nullable: true })
-  paymentUrl: string;
+  payment_url: string;
 
   @AutoMap()
   @Column({ type: 'enum', enum: PaymentStatus, nullable: true })
   status: PaymentStatus;
 
   @AutoMap()
-  @Column({ name: 'tnx_ref', nullable: false })
-  txnRef: string;
-
-  @AutoMap()
   @Column({ name: 'time_over', type: 'timestamp', nullable: false })
-  timeOver: Date;
+  time_over: Date;
+  
+  @AutoMap()
+  @Column({ name: 'tnx_ref', nullable: false })
+  txn_ref: string; 
 
   @AutoMap()
   @Column({ name: 'time_id', type: 'uuid', nullable: false })
-  timeId: string;
+  time_id: string;
 
   @AutoMap()
   @Column({ name: 'user_id', type: 'uuid', nullable: false })
-  userId: string;
+  user_id: string;
 
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
@@ -68,5 +68,5 @@ export class Payment extends BaseEntity {
   @ManyToOne(() => TimeBookDetail)
   @JoinColumn({ name: 'time_id' })
   @AutoMap(() => TimeBookDetail)
-  timeBookDetail: TimeBookDetail;
+  time_book_detail: TimeBookDetail;
 }

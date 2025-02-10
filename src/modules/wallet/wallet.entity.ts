@@ -13,23 +13,23 @@ import { BaseEntity } from 'src/base.entity';
 export class Wallet extends BaseEntity {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid')
-  walletId: string;
+  wallet_id: string;
 
   @AutoMap()
   @Column({ name: 'account_number' })
-  accountNumber: string;
+  account_number: string;
 
   @AutoMap()
   @Column({ name: 'total_money', type: 'decimal' })
-  totalMoney: number;
+  total_money: number;
 
   @AutoMap()
   @Column({ name: 'bank_name' })
-  bankName: string;
+  bank_name: string;
 
   @AutoMap()
   @Column({ name: 'user_id', type: 'uuid' })
-  userId: string;
+  user_id: string;
 
   @ManyToOne(() => User)
   @AutoMap(() => User)

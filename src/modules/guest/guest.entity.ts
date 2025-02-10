@@ -15,11 +15,11 @@ import { BaseEntity } from 'src/base.entity';
 export class Guest extends BaseEntity {
   @AutoMap()
   @PrimaryGeneratedColumn('uuid', { name: 'guest_id' })
-  guestId: string;
+  guest_id: string;
 
   @AutoMap()
   @Column({ name: 'guest_type' })
-  guestType: string;
+  guest_type: string;
 
   @AutoMap()
   @Column({ name: 'quantity' })
@@ -27,11 +27,11 @@ export class Guest extends BaseEntity {
 
   @AutoMap()
   @Column({ name: 'time_id' })
-  timeId: string;
+  time_id: string;
 
   @AutoMap()
   @Column({ name: 'user_id' })
-  userId: string;
+  user_id: string;
 
   @AutoMap()
   @ManyToOne(() => User, { eager: false })
@@ -43,5 +43,5 @@ export class Guest extends BaseEntity {
     eager: false,
   })
   @JoinColumn({ name: 'time_id' })
-  timeBookDetail: TimeBookDetail;
+  time_book_detail: TimeBookDetail;
 }

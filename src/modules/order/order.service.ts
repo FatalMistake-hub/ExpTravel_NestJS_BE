@@ -42,9 +42,9 @@ export class OrderService {
     if (status === OrderStatusEnum.SUCCESS) {
       await this.orderRepository.updateStatus(OrderStatusEnum.SUCCESS, orderId);
     } else if (status === OrderStatusEnum.CANCEL) {
-      totalMoneyUpdate = wallet.totalMoney + order.price;
+      totalMoneyUpdate = wallet.total_money + order.price;
       await this.walletRepository.updateTotalMoney(
-        wallet.walletId,
+        wallet.wallet_id,
         totalMoneyUpdate,
       );
       await this.orderRepository.updateStatus(OrderStatusEnum.CANCEL, orderId);
@@ -62,12 +62,12 @@ export class OrderService {
     for (const item of orderList) {
       const orderDto = new OrderDto();
       user = await this.userRepository.findOne({
-        where: { user_id: item.userId },
+        where: { user_id: item.user_id },
       });;
-      tour = await this.tourRepository.getTourByOrderId(item.orderId);
-      dayBook = await this.dayBookRepository.getDayBookByTimeId(item.timeId);
+      tour = await this.tourRepository.getTourByOrderId(item.order_id);
+      dayBook = await this.dayBookRepository.getDayBookByTimeId(item.time_id);
       timeBookDetail = await this.timeBookRepository.getTimeBookDetailById(
-        item.timeId,
+        item.time_id,
       );
 
       const userViewDto = new UserViewDto();
@@ -83,17 +83,17 @@ export class OrderService {
       timeBookViewDto.startTime = timeBookDetail.start_time;
       timeBookViewDto.endTime = timeBookDetail.end_time;
       timeBookViewDto.isDeleted = timeBookDetail.is_deleted;
-      timeBookViewDto.timeId = item.timeId;
+      timeBookViewDto.timeId = item.time_id;
 
       orderDto.tourId = tour.tourId;
       orderDto.orderDate = item.created_at;
-      orderDto.statusOrder = item.statusOrder;
+      orderDto.statusOrder = item.status_order;
       orderDto.price = item.price;
-      orderDto.orderIdBlockChain = item.orderIdBlockChain;
-      orderDto.publicKey = item.publicKey;
-      orderDto.orderId = item.orderId;
-      orderDto.timeId = item.timeId;
-      orderDto.userId = item.userId;
+      orderDto.orderIdBlockChain = item.order_id_blockchain;
+      orderDto.publicKey = item.public_key;
+      orderDto.orderId = item.order_id;
+      orderDto.timeId = item.time_id;
+      orderDto.userId = item.user_id;
       orderDto.city = tour.city;
       orderDto.date_name = dayBook.date_name;
       orderDto.imageMain = tour.imageMain;
@@ -118,16 +118,16 @@ export class OrderService {
     for (const item of orderList) {
       const orderDto = new OrderDto();
       orderDto.orderDate = item.created_at;
-      orderDto.statusOrder = item.statusOrder;
+      orderDto.statusOrder = item.status_order;
       orderDto.price = item.price;
-      orderDto.orderId = item.orderId;
-      orderDto.timeId = item.timeId;
-      orderDto.userId = item.userId;
+      orderDto.orderId = item.order_id;
+      orderDto.timeId = item.time_id;
+      orderDto.userId = item.user_id;
       orderDto.city = tour.city;
       orderDto.imageMain = tour.imageMain;
       orderDto.tour_title = tour.title;
-      orderDto.orderIdBlockChain = item.orderIdBlockChain;
-      orderDto.publicKey = item.publicKey;
+      orderDto.orderIdBlockChain = item.order_id_blockchain; 
+      orderDto.publicKey = item.public_key; 
       orderDto.priceOnePerson = tour.priceOnePerson;
       orderDtoList.push(orderDto);
     }
@@ -159,12 +159,12 @@ export class OrderService {
         // Cast data to Order[] for type safety
         const orderDto = new OrderDto();
         user = await this.userRepository.findOne({
-          where: { user_id: item.userId },
+          where: { user_id: item.user_id },
         });
-        tour = await this.tourRepository.getTourByOrderId(item.orderId);
-        dayBook = await this.dayBookRepository.getDayBookByTimeId(item.timeId);
+        tour = await this.tourRepository.getTourByOrderId(item.order_id);
+        dayBook = await this.dayBookRepository.getDayBookByTimeId(item.time_id);
         timeBookDetail = await this.timeBookRepository.getTimeBookDetailById(
-          item.timeId,
+          item.time_id,
         );
 
         const userViewDto = new UserViewDto();
@@ -180,17 +180,17 @@ export class OrderService {
         timeBookViewDto.startTime = timeBookDetail.start_time;
         timeBookViewDto.endTime = timeBookDetail.end_time;
         timeBookViewDto.isDeleted = timeBookDetail.is_deleted;
-        timeBookViewDto.timeId = item.timeId;
+        timeBookViewDto.timeId = item.time_id;
 
         orderDto.tourId = tour.tourId;
         orderDto.orderDate = item.created_at;
-        orderDto.statusOrder = item.statusOrder;
+        orderDto.statusOrder = item.status_order;
         orderDto.price = item.price;
-        orderDto.orderIdBlockChain = item.orderIdBlockChain;
-        orderDto.publicKey = item.publicKey;
-        orderDto.orderId = item.orderId;
-        orderDto.timeId = item.timeId;
-        orderDto.userId = item.userId;
+        orderDto.orderIdBlockChain = item.order_id_blockchain;
+        orderDto.publicKey = item.public_key;
+        orderDto.orderId = item.order_id;
+        orderDto.timeId = item.time_id;
+        orderDto.userId = item.user_id;
         orderDto.city = tour.city;
         orderDto.date_name = dayBook.date_name;
         orderDto.imageMain = tour.imageMain;
@@ -234,9 +234,9 @@ export class OrderService {
     const orderDetailDto = new OrderDetailDto();
     orderDetailDto.orderId = order_id;
     orderDetailDto.orderDate = order.created_at;
-    orderDetailDto.statusOrder = order.statusOrder;
-    orderDetailDto.orderIdBlockChain = order.orderIdBlockChain;
-    orderDetailDto.publicKey = order.publicKey;
+    orderDetailDto.statusOrder = order.status_order;
+    orderDetailDto.orderIdBlockChain = order.order_id_blockchain;
+    orderDetailDto.publicKey = order.public_key;
     orderDetailDto.price = order.price;
     orderDetailDto.city = tour.city;
     orderDetailDto.imageMain = tour.imageMain;
@@ -267,11 +267,11 @@ export class OrderService {
       orderIdBlockchain,
       publicKey,
     );
-    if (orderOptional && orderOptional.publicKey === publicKey) {
+    if (orderOptional && orderOptional.public_key === publicKey) {
       // Check if orderOptional is not null and then access publicKey
       await this.orderRepository.updateStatus(
         OrderStatusEnum.USED,
-        orderOptional.orderId,
+        orderOptional.order_id,
       );
       return 'SUCCESS';
     }

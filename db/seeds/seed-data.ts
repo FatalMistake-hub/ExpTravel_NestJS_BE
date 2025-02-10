@@ -12,8 +12,8 @@ import { DayBookStatusEnum } from 'src/utils/enum';
 export const seedData = async (manager: EntityManager): Promise<void> => {
   await seedUsers(manager);
   await seedCategories(manager);
-  await seedTours(manager);
-  await seedImageDetails(manager);
+  // await seedTours(manager);
+  // await seedImageDetails(manager);
   // await seedDayBooks(manager);
   // await seedTimeBookDetails(manager);
 };

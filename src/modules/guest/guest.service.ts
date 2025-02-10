@@ -16,8 +16,11 @@ export class GuestService {
   async createGuests(guestDtos: GuestDto[]): Promise<GuestDto[]> {
     for (const guestDto of guestDtos) {
       const guest = this.nativeGuestRepository.create({
-        // guestId: uuidv4(),
-        ...guestDto,
+        guest_id: uuidv4(),
+        guest_type: guestDto.guestType,
+        quantity: guestDto.quantity,
+        time_id: guestDto.timeId,
+        user_id: guestDto.userId,
       });
       await this.nativeGuestRepository.save(guest);
     }
@@ -26,7 +29,7 @@ export class GuestService {
 
   async createGuest(guestDto: GuestDto): Promise<GuestDto> {
     const guest = this.nativeGuestRepository.create({
-      guestId: uuidv4(),
+      guest_id: uuidv4(),
       ...guestDto,
     });
     await this.nativeGuestRepository.save(guest);
@@ -34,7 +37,7 @@ export class GuestService {
   }
 
   async deleteGuestById(id: string): Promise<void> {
-    const guest = await this.nativeGuestRepository.findOne({ where: { guestId: id } });
+    const guest = await this.nativeGuestRepository.findOne({ where: { guest_id: id } });
     if (!guest) {
       throw new NotFoundException('Guest not found');
     }
@@ -42,7 +45,7 @@ export class GuestService {
   }
 
   async updateGuest(guestDto: GuestDto, id: string): Promise<GuestDto> {
-    const guest = await this.nativeGuestRepository.findOne({ where: { guestId: id } });
+    const guest = await this.nativeGuestRepository.findOne({ where: { guest_id: id } });
 
     if (!guest) {
       throw new NotFoundException('Guest not found');
@@ -56,11 +59,11 @@ export class GuestService {
   async getAllGuests(): Promise<GuestDto[]> {
     const guests = await this.nativeGuestRepository.find();
     return guests.map((guest) => ({
-      guestId: guest.guestId,
-      guestType: guest.guestType,
+      guestId: guest.guest_id,
+      guestType: guest.guest_type,
       quantity: guest.quantity,
-      timeId: guest.timeId,
-      userId: guest.userId,
+      timeId: guest.time_id,
+      userId: guest.user_id,
     }));
   }
 }

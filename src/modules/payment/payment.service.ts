@@ -40,7 +40,7 @@ export class PaymentService {
     if (timeBook.is_payment) {
       throw new NotFoundException('PAYMENT NOT FOUND');
     }
-    const returnUrl = 'https://experience-travel.vercel.app/trips';
+    const returnUrl = 'https://experiencetravel.vercel.app/trips';
 
     // 2. Thiết lập các thuộc tính của VNPAY
     const vnp_Version = '2.1.0';
@@ -70,10 +70,10 @@ export class PaymentService {
 
     // 4. Tạo Order mới
     const order = new Order();
-    order.orderDate = new Date();
-    order.statusOrder = OrderStatusEnum.WAITING;
-    order.timeId = timeId;
-    order.userId = userId;
+    order.order_date = new Date();
+    order.status_order = OrderStatusEnum.WAITING;
+    order.time_id = timeId;
+    order.user_id = userId;
     order.price = priceTotal;
  
     const savedOrder = await this.nativeOrderRepository.save(order);
@@ -85,7 +85,7 @@ export class PaymentService {
       vnp_TmnCode,
       vnp_Amount: Math.floor(amount).toString(),
       vnp_CurrCode: 'VND',
-      vnp_TxnRef: savedOrder.orderId.toString(),
+      vnp_TxnRef: savedOrder.order_id.toString(),
       vnp_OrderInfo,
       vnp_OrderType: orderType,
       vnp_Locale: locate,
@@ -136,33 +136,33 @@ export class PaymentService {
     // 8. Tính toán vnp_SecureHash bằng HMAC SHA512
     const vnp_HashSecret = Common.VNP_HASH_SECRET;
     const vnp_SecureHash = crypto
-      .createHmac('sha512', vnp_HashSecret)
+      .createHmac('sha256', vnp_HashSecret)
       .update(hashData)
       .digest('hex');
     query += `&vnp_SecureHash=${vnp_SecureHash}`;
     const paymentUrl = `${Common.VNP_URL}?${query}`;
 
     // 9. Cập nhật ví: trừ số tiền thanh toán khỏi tổng tiền
-    const wallet: Wallet = await this.nativeWalletRepository.getWalletByOrderId(savedOrder.orderId);
-    wallet.totalMoney = wallet.totalMoney - priceTotal;
+    const wallet: Wallet = await this.nativeWalletRepository.getWalletByOrderId(savedOrder.order_id);
+    wallet.total_money = wallet.total_money - priceTotal;
     await this.nativeWalletRepository.save(wallet);
 
     // 10. Tạo Payment mới
     const payment = new Payment();
     payment.created_at = new Date();
-    payment.vnpOrderInfo = vnp_OrderInfo;
-    payment.orderType = orderType;
+    payment.vnp_order_info = vnp_OrderInfo;
+    payment.order_type = orderType;
     payment.amount = amount;
     payment.locate = locate;
-    payment.ipAddress = vnp_IpAddr;
-    payment.paymentUrl = paymentUrl;
+    payment.ip_address = vnp_IpAddr; 
+    payment.payment_url = paymentUrl; 
     payment.status = PaymentStatus.SUCCESS;
-    payment.txnRef = savedOrder.orderId.toString();
-    payment.timeOver = expireTime;
-    payment.userId = userId;
+    payment.txn_ref = savedOrder.order_id.toString();
+    payment.time_over = expireTime; 
+    payment.user_id = userId; 
     payment.user = await this.userService.findOneById(userId);
-    payment.timeId = timeId;
-    payment.timeBookDetail = timeBook;
+    payment.time_id = timeId; 
+    payment.time_book_detail = timeBook; 
     await this.nativePaymentRepository.save(payment);
 
     // 11. Tạo PaymentResultDto và trả về kết quả
@@ -185,7 +185,7 @@ export class PaymentService {
     if (responseCode === '00') {
       payment.status = PaymentStatus.SUCCESS;
       payment.updated_at = new Date();
-      const timeBookDetail = await this.timeBookDetailService.updateStatusPayment(payment.timeBookDetail.time_id, true);
+      const timeBookDetail = await this.timeBookDetailService.updateStatusPayment(payment.time_book_detail.time_id, true);
     } else {
       payment.status = PaymentStatus.FAILURE;
       payment.updated_at = new Date();

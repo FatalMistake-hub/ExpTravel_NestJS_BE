@@ -14,11 +14,11 @@ export class WalletService {
 
   async createWallet(walletDto: WalletDto, userId: string): Promise<void> {
     const wallet = this.nativeWalletRepository.create({
-      walletId: uuidv4(),
-      accountNumber: walletDto.accountNumber,
-      totalMoney: walletDto.totalMoney,
-      userId,
-      bankName: walletDto.bankName,
+      wallet_id: uuidv4(),
+      account_number: walletDto.accountNumber,
+      total_money: walletDto.totalMoney,
+      user_id: userId,
+      bank_name: walletDto.bankName,
     });
 
     await this.nativeWalletRepository.save(wallet);
@@ -32,10 +32,10 @@ export class WalletService {
     }
 
     return {
-      walletId: wallet.walletId,
-      accountNumber: wallet.accountNumber,
-      totalMoney: wallet.totalMoney,
-      bankName: wallet.bankName,
+      walletId: wallet.wallet_id,
+      accountNumber: wallet.account_number,
+      totalMoney: wallet.total_money,
+      bankName: wallet.bank_name,
     };
   }
 
@@ -47,15 +47,15 @@ export class WalletService {
     }
 
     return {
-      walletId: wallet.walletId,
-      totalMoney: wallet.totalMoney,
-      accountNumber: wallet.accountNumber,
-      bankName: wallet.bankName,
+      walletId: wallet.wallet_id,
+      totalMoney: wallet.total_money,
+      accountNumber: wallet.account_number,
+      bankName: wallet.bank_name,
     };
   }
 
   async updateWalletByField(id: string, fields: Partial<Wallet>): Promise<void> {
-    const wallet = await this.nativeWalletRepository.findOne({ where: { walletId: id } });
+    const wallet = await this.nativeWalletRepository.findOne({ where: { wallet_id: id } });
 
     if (!wallet) {
       throw new NotFoundException('Wallet not found');
